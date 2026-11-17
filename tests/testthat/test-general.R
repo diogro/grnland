@@ -65,3 +65,25 @@ test_that("unstable steady states are flagged", {
   expect_lt(low$X[1, 1], mid)
   expect_gt(high$X[1, 1], mid)
 })
+
+test_that("linear maps develop, invert and give M = Sigma B B'", {
+  B <- matrix(c(5, -4, -4, 5) / 3, 2)
+  m <- gp_linear(B)
+  expect_equal(phenotype(m, c(1, 2)), c(x1 = -1, x2 = 2), tolerance = 1e-12)
+  expect_equal(genotype_at(m, c(-1, 2)), c(1, 2), tolerance = 1e-12)
+  expect_equal(unname(m_matrix(m, c(1, 2), mu = 0.01, sigma = 0.05)),
+               0.01 * 0.05^2 * B %*% t(B), tolerance = 1e-12)
+})
+
+test_that("Lande separatrix of two symmetric peaks is the midline when G is isotropic", {
+  land <- landscape_gaussian(rbind(c(3, 5), c(7, 5)), omega = 2)
+  sep <- lande_separatrices(paper_motif(6), land, lower = 0, upper = 10, step = 0.02)
+  expect_equal(nrow(attr(sep, "saddles")), 1)
+  expect_equal(attr(sep, "saddles")[1, ], c(5, 5), tolerance = 1e-3)
+  expect_lt(max(abs(sep$x1 - 5)), 0.02)
+  # positive covariance rotates the separatrix towards the leading eigenvector (1, 1)
+  B <- matrix(c(5, 4, 4, 5) / 3, 2)
+  sep2 <- lande_separatrices(gp_linear(B), land, lower = 0, upper = 10, step = 0.02)
+  tilt <- coef(lm(x1 ~ x2, data = sep2))[2]
+  expect_gt(tilt, 0.3)
+})

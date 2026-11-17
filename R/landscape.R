@@ -137,10 +137,13 @@ print.grn_landscape <- function(x, ...) {
 #' @param res Grid resolution per dimension (2D).
 #' @param dim Number of dimensions (taken from the landscape if possible).
 #' @param n_starts Number of random starts (other dimensions).
+#' @param merge In 2D, maxima closer than this many grid cells are merged,
+#'   keeping the highest (flat tops otherwise give duplicate peaks). 0 keeps
+#'   all, as in the original scripts.
 #' @return Data frame with peak coordinates and `fitness`.
 #' @export
 find_peaks <- function(landscape, lower = 0, upper = 15, res = 500,
-                       dim = attr(landscape, "n_dim"), n_starts = 200) {
+                       dim = attr(landscape, "n_dim"), n_starts = 200, merge = 3) {
   if (is.null(dim)) stop("give 'dim'")
   lower <- rep_len(lower, dim)
   upper <- rep_len(upper, dim)
@@ -158,7 +161,21 @@ find_peaks <- function(landscape, lower = 0, upper = 15, res = 500,
     is_max[c(1, res), ] <- FALSE
     is_max[, c(1, res)] <- FALSE
     idx <- which(is_max, arr.ind = TRUE)
-    return(data.frame(x1 = xs[idx[, 1]], x2 = ys[idx[, 2]], fitness = Z[idx]))
+    pk <- data.frame(x1 = xs[idx[, 1]], x2 = ys[idx[, 2]], fitness = Z[idx])
+    # Flat tops can produce several adjacent maxima: keep the highest of any
+    # group closer than `merge` grid cells.
+    if (merge > 0 && nrow(pk) > 1) {
+      cell <- max((upper - lower) / (res - 1))
+      ord <- order(-pk$fitness)
+      keep <- integer()
+      for (r in ord) {
+        d <- sqrt((pk$x1[keep] - pk$x1[r])^2 + (pk$x2[keep] - pk$x2[r])^2)
+        if (!any(d < merge * cell)) keep <- c(keep, r)
+      }
+      pk <- pk[sort(keep), ]
+      rownames(pk) <- NULL
+    }
+    return(pk)
   }
   starts <- matrix(stats::runif(n_starts * dim, lower, upper), ncol = dim, byrow = TRUE)
   sols <- t(apply(starts, 1, function(s) {

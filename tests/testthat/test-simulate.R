@@ -56,3 +56,9 @@ test_that("grid-cached landscapes match the original closely", {
   X <- matrix(runif(2000, 0.5, 14.5), ncol = 2)
   expect_lt(max(abs(cached(X) - land(X))), 1e-4)
 })
+
+test_that("find_peaks merges duplicate maxima on flat tops", {
+  flat <- landscape_function(function(X) pmin(exp(-rowSums((X - 5.0125)^2) / 4), 0.9995), dim = 2)
+  expect_equal(nrow(find_peaks(flat, 0, 10, res = 400)), 1)
+  expect_gt(nrow(find_peaks(flat, 0, 10, res = 400, merge = 0)), 1)
+})

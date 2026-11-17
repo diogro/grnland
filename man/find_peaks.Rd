@@ -10,7 +10,8 @@ find_peaks(
   upper = 15,
   res = 500,
   dim = attr(landscape, "n_dim"),
-  n_starts = 200
+  n_starts = 200,
+  merge = 3
 )
 }
 \arguments{
@@ -23,6 +24,10 @@ find_peaks(
 \item{dim}{Number of dimensions (taken from the landscape if possible).}
 
 \item{n_starts}{Number of random starts (other dimensions).}
+
+\item{merge}{In 2D, maxima closer than this many grid cells are merged,
+keeping the highest (flat tops otherwise give duplicate peaks). 0 keeps
+all, as in the original scripts.}
 }
 \value{
 Data frame with peak coordinates and `fitness`.

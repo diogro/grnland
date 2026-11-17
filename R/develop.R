@@ -82,7 +82,10 @@ sensitivity <- function(model, genotype, x = NULL) {
     if (d$status != 0) warning("development status ", d$status)
     x <- d$X[1, ]
   }
-  if (inherits(model, "hill_grn")) {
+  if (inherits(model, "linear_gp")) {
+    J <- -diag(model$n_genes)
+    D <- model$B
+  } else if (inherits(model, "hill_grn")) {
     l <- model$loci
     dv <- hill_derivs_cpp(hill_base(model), l$code, l$i - 1L,
                           ifelse(is.na(l$j), 0L, l$j - 1L), genotype, x)
@@ -148,6 +151,8 @@ genotype_at <- function(model, phenotype, start = NULL, tol = 1e-10) {
   phenotype <- as.numeric(phenotype)
   nt <- length(model$traits)
   if (length(phenotype) != nt) stop("phenotype must have ", nt, " values")
+  if (inherits(model, "linear_gp") && nt == model$n_genes)
+    return(as.numeric(solve(model$B, phenotype)))
   if (inherits(model, "hill_grn") && nt == model$n_genes &&
       setequal(model$loci$param, "alpha") && nrow(model$loci) == model$n_genes) {
     x <- numeric(model$n_genes)

@@ -238,6 +238,7 @@ loci_names <- function(model) model$loci$name
 #' @export
 default_genotype <- function(model) {
   if (inherits(model, "custom_grn")) return(unname(model$params[model$loci$param]))
+  if (inherits(model, "linear_gp")) return(rep(1, nrow(model$loci)))
   l <- model$loci
   vapply(seq_len(nrow(l)), function(k) {
     switch(l$param[k],
