@@ -6,7 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Paper figures and examples • grnland</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -80,17 +86,16 @@ replicates). They show what each figure contains, not final results.</p>
 <p>All scripts share the simulation settings of the original analysis
 code:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diogro.github.io/grnland/">grnland</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diogro/grnland" class="external-link">grnland</a></span><span class="op">)</span></span>
 <span><span class="va">PAPER</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">1000</span>, generations <span class="op">=</span> <span class="fl">10000</span>, mu <span class="op">=</span> <span class="fl">0.01</span>, sigma <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>              ploidy <span class="op">=</span> <span class="fl">1</span>, reproduction <span class="op">=</span> <span class="st">"clonal"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="the-six-motifs">The six motifs<a class="anchor" aria-label="anchor" href="#the-six-motifs"></a>
 </h2>
 <p>Every figure compares the same six two-gene networks. Each gene has
-its own production rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math>
-as the evolving locus; the motifs differ only in how the two genes
-regulate each other.</p>
+its own production rate <span class="math inline">\(\alpha_i\)</span> as
+the evolving locus; the motifs differ only in how the two genes regulate
+each other.</p>
 <table class="table">
 <thead><tr class="header">
 <th>Motif</th>
@@ -100,19 +105,18 @@ regulate each other.</p>
 <tbody>
 <tr class="odd">
 <td>1</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>→</mo><msub><mi>x</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">x_1 \to x_2</annotation></semantics></math></td>
+<td><span class="math inline">\(x_1 \to x_2\)</span></td>
 <td><code>paper_motif(1)</code></td>
 </tr>
 <tr class="even">
 <td>2</td>
-<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>⊣</mo><msub><mi>x</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">x_1 \dashv x_2</annotation></semantics></math></td>
+<td><span class="math inline">\(x_1 \dashv x_2\)</span></td>
 <td><code>paper_motif(2)</code></td>
 </tr>
 <tr class="odd">
 <td>3</td>
 <td>
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub><mo>→</mo><msub><mi>x</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">x_1 \to x_2</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>2</mn></msub><mo>⊣</mo><msub><mi>x</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">x_2 \dashv x_1</annotation></semantics></math>
+<span class="math inline">\(x_1 \to x_2\)</span>, <span class="math inline">\(x_2 \dashv x_1\)</span>
 </td>
 <td><code>paper_motif(3)</code></td>
 </tr>
@@ -143,8 +147,8 @@ six motifs start from the same phenotype on the same rugged landscape.
 Because their M-matrices point in different directions (panel B), they
 climb to different peaks (panels A and C), and every one of 10 replicate
 populations per motif ends on the peak predicted by the deterministic
-Lande equation
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mover><mi>z</mi><mo accent="true">‾</mo></mover><mo accent="true">̇</mo></mover><mo>=</mo><mi>M</mi><mi>∇</mi><mi>W</mi></mrow><annotation encoding="application/x-tex">\dot{\bar z} = M\nabla W</annotation></semantics></math>.</p>
+Lande equation <span class="math inline">\(\dot{\bar z} = M\nabla
+W\)</span>.</p>
 <p><img src="figures/motif_example.png"></p>
 <p>Motifs whose M has positive covariance between the traits (1, 3, 5)
 go to peak C, those with negative covariance (2, 4) to peak A, and the
@@ -170,14 +174,12 @@ peak and motifs 2 and 4 each reach a different one:</p>
 <h2 id="fig-1-linear-genotype-phenotype-maps">Fig 1: linear genotype-phenotype maps<a class="anchor" aria-label="anchor" href="#fig-1-linear-genotype-phenotype-maps"></a>
 </h2>
 <p><em>Script: <code>analysis/fig1_linear_maps.R</code>.</em> With a
-linear map
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>B</mi><mi>α</mi></mrow><annotation encoding="application/x-tex">x = B\alpha</annotation></semantics></math>
-the M-matrix is constant,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>=</mo><mi>μ</mi><msup><mi>σ</mi><mn>2</mn></msup><mi>B</mi><msup><mi>B</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">M = \mu\sigma^2 BB^\top</annotation></semantics></math>.
-Three maps (no covariance, positive, negative) evolve on a single peak
-(A) and on a two-peak landscape (B), where outcomes from a grid of
-starts are classified by an SVM (white borders) and compared with the
-separatrix of the Lande equation (dashed).</p>
+linear map <span class="math inline">\(x = B\alpha\)</span> the M-matrix
+is constant, <span class="math inline">\(M = \mu\sigma^2
+BB^\top\)</span>. Three maps (no covariance, positive, negative) evolve
+on a single peak (A) and on a two-peak landscape (B), where outcomes
+from a grid of starts are classified by an SVM (white borders) and
+compared with the separatrix of the Lande equation (dashed).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>B1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,</span>
 <span>          B2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span>,</span>
@@ -192,7 +194,7 @@ separatrix of the Lande equation (dashed).</p>
 </h2>
 <p><em>Script: <code>analysis/fig2_m_matrices.R</code>.</em> M-matrices
 of each motif over a grid of phenotypes, with the sensitivity vectors
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>∂</mi><mi>x</mi><mi>/</mi><mi>∂</mi><msub><mi>α</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\partial x/\partial\alpha_i</annotation></semantics></math>.
+<span class="math inline">\(\partial x/\partial\alpha_i\)</span>.
 Regulation makes M vary in size, shape and orientation across phenotype
 space.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">

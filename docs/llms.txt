@@ -53,15 +53,13 @@ plot(sim$trajectory$mean_x1, sim$trajectory$mean_x2, type = "l")
 
 ### Hill-type networks: `grn()`
 
-For genes $`i = 1..n`$,
+For genes \\i = 1..n\\,
 
-``` math
-\dot x_i = \alpha_i \prod_j H_{ij}(x_j) - \gamma_i x_i,
-```
+\\\dot x_i = \alpha_i \prod_j H\_{ij}(x_j) - \gamma_i x_i,\\
 
-where $`H_{ij}(x) = x^h/(\theta^h + x^h)`$ if gene $`j`$ activates gene
-$`i`$, $`1 - x^h/(\theta^h + x^h)`$ if $`j`$ represses $`i`$, and 1 if
-they don’t interact ($`\theta = \theta_{ij}`$, $`h = h_{ij}`$). The
+where \\H\_{ij}(x) = x^h/(\theta^h + x^h)\\ if gene \\j\\ activates gene
+\\i\\, \\1 - x^h/(\theta^h + x^h)\\ if \\j\\ represses \\i\\, and 1 if
+they don’t interact (\\\theta = \theta\_{ij}\\, \\h = h\_{ij}\\). The
 phenotype is the steady state that development reaches.
 
 ``` r
@@ -161,7 +159,7 @@ points.
   closed forms. For the six motifs they agree with the closed forms to
   about 1e-8, and the sensitivities agree with the analytical
   expressions in `Fig2.r` (see `tests/testthat/test-motifs.R`).
-- Motif 5 (mutual activation): when $`\alpha_1\alpha_2 < \theta^2`$ the
+- Motif 5 (mutual activation): when \\\alpha_1\alpha_2 \< \theta^2\\ the
   network goes to the zero state, which is what the dynamics do; the
   closed form gives negative expression there. The stale-phenotype bug
   of `Fig5.r` does not exist here: phenotypes are always recomputed from

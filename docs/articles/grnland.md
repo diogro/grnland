@@ -22,13 +22,11 @@ library(grnland)
 Networks are written as edges: `"a -> b"` means *a activates b*,
 `"a -| b"` means *a represses b*. Each gene follows Hill-type kinetics,
 
-``` math
-\dot x_i = \alpha_i \prod_j H_{ij}(x_j) - \gamma_i x_i,
-```
+\\\dot x_i = \alpha_i \prod_j H\_{ij}(x_j) - \gamma_i x_i,\\
 
-with production rate $`\alpha_i`$, decay rate $`\gamma_i`$, and
-$`H_{ij}(x) = x^h/(\theta^h + x^h)`$ for activation,
-$`1 - x^h/(\theta^h + x^h)`$ for repression.
+with production rate \\\alpha_i\\, decay rate \\\gamma_i\\, and
+\\H\_{ij}(x) = x^h/(\theta^h + x^h)\\ for activation, \\1 -
+x^h/(\theta^h + x^h)\\ for repression.
 
 ``` r
 
@@ -86,12 +84,11 @@ phenotype(mot, g5)
 
 ### Sensitivities and the M-matrix
 
-The sensitivity matrix $`S = \partial x^*/\partial p`$ is computed
-analytically from the Jacobian of the dynamics
-($`S = -J^{-1}\,\partial f/\partial p`$). With per-locus mutation rate
-$`\mu`$ and mutational effect $`\sigma`$, the M-matrix is
-$`M = S\,\Sigma\,S^\top`$ with $`\Sigma = \mu\sigma^2 I`$ (times the
-ploidy).
+The sensitivity matrix \\S = \partial x^\*/\partial p\\ is computed
+analytically from the Jacobian of the dynamics (\\S = -J^{-1}\\\partial
+f/\partial p\\). With per-locus mutation rate \\\mu\\ and mutational
+effect \\\sigma\\, the M-matrix is \\M = S\\\Sigma\\S^\top\\ with
+\\\Sigma = \mu\sigma^2 I\\ (times the ploidy).
 
 ``` r
 
@@ -244,7 +241,7 @@ phenotype(cm, default_genotype(cm))
 ```
 
 **Linear maps.** `gp_linear(B)` gives the linear genotype-phenotype map
-$`x = B\alpha`$, with a constant M-matrix, a useful null model:
+\\x = B\alpha\\, with a constant M-matrix, a useful null model:
 
 ``` r
 
@@ -257,9 +254,9 @@ m_matrix(lin, phenotype = c(1, 1))
 
 **Basins under the Lande equation.**
 [`lande_separatrices()`](https://diogro.github.io/grnland/reference/lande_separatrices.md)
-traces basin borders for deterministic evolution
-$`\dot{\bar z} = G\,\nabla W`$ with $`G \propto M`$, which can be
-compared with simulated outcomes.
+traces basin borders for deterministic evolution \\\dot{\bar z} =
+G\\\nabla W\\ with \\G \propto M\\, which can be compared with simulated
+outcomes.
 
 **More traits.** Nothing is specific to two traits: networks can have
 any number of genes, and `traits` chooses which are selected. Landscapes

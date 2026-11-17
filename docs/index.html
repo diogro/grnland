@@ -6,7 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>grnland: evolution of gene regulatory networks on adaptive landscapes • grnland</title>
-<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -68,7 +74,7 @@
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diogro.github.io/grnland/">grnland</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diogro/grnland" class="external-link">grnland</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/paper_motif.html">paper_motif</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>                                   <span class="co"># mutual activation</span></span>
 <span><span class="va">land</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/landscapes.html">landscape_gaussian</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">3</span><span class="op">)</span>, omega <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>        <span class="co"># one Gaussian peak</span></span>
@@ -98,11 +104,11 @@
 <h3 id="hill-type-networks-grn">Hill-type networks: <code>grn()</code>
 <a class="anchor" aria-label="anchor" href="#hill-type-networks-grn"></a>
 </h3>
-<p>For genes <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>=</mo><mn>1</mn><mi>.</mi><mi>.</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">i = 1..n</annotation></semantics></math>,</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>x</mi><mo accent="true">̇</mo></mover><mi>i</mi></msub><mo>=</mo><msub><mi>α</mi><mi>i</mi></msub><munder><mo>∏</mo><mi>j</mi></munder><msub><mi>H</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>γ</mi><mi>i</mi></msub><msub><mi>x</mi><mi>i</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">\dot x_i = \alpha_i \prod_j H_{ij}(x_j) - \gamma_i x_i,</annotation></semantics></math></p>
-<p>where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msup><mi>x</mi><mi>h</mi></msup><mi>/</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>θ</mi><mi>h</mi></msup><mo>+</mo><msup><mi>x</mi><mi>h</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">H_{ij}(x) = x^h/(\theta^h + x^h)</annotation></semantics></math> if gene <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math> activates gene <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><msup><mi>x</mi><mi>h</mi></msup><mi>/</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>θ</mi><mi>h</mi></msup><mo>+</mo><msup><mi>x</mi><mi>h</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">1 - x^h/(\theta^h + x^h)</annotation></semantics></math> if <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math> represses <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>, and 1 if they don’t interact (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>θ</mi><mo>=</mo><msub><mi>θ</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\theta = \theta_{ij}</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><msub><mi>h</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">h = h_{ij}</annotation></semantics></math>). The phenotype is the steady state that development reaches.</p>
+<p>For genes <span class="math inline">\(i = 1..n\)</span>,</p>
+<p><span class="math display">\[\dot x_i = \alpha_i \prod_j H_{ij}(x_j) - \gamma_i x_i,\]</span></p>
+<p>where <span class="math inline">\(H_{ij}(x) = x^h/(\theta^h + x^h)\)</span> if gene <span class="math inline">\(j\)</span> activates gene <span class="math inline">\(i\)</span>, <span class="math inline">\(1 - x^h/(\theta^h + x^h)\)</span> if <span class="math inline">\(j\)</span> represses <span class="math inline">\(i\)</span>, and 1 if they don’t interact (<span class="math inline">\(\theta = \theta_{ij}\)</span>, <span class="math inline">\(h = h_{ij}\)</span>). The phenotype is the steady state that development reaches.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diogro.github.io/grnland/">grnland</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diogro/grnland" class="external-link">grnland</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># edges: "a -&gt; b" activation, "a -| b" repression; self-regulation allowed</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grn.html">grn</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a -&gt; b"</span>, <span class="st">"b -| c"</span>, <span class="st">"c -&gt; a"</span>, <span class="st">"a -| c"</span><span class="op">)</span>,</span>
@@ -171,7 +177,7 @@
 </h2>
 <ul>
 <li>Steady states are computed numerically for every network, not from closed forms. For the six motifs they agree with the closed forms to about 1e-8, and the sensitivities agree with the analytical expressions in <code>Fig2.r</code> (see <code>tests/testthat/test-motifs.R</code>).</li>
-<li>Motif 5 (mutual activation): when <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mn>1</mn></msub><msub><mi>α</mi><mn>2</mn></msub><mo>&lt;</mo><msup><mi>θ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\alpha_1\alpha_2 &lt; \theta^2</annotation></semantics></math> the network goes to the zero state, which is what the dynamics do; the closed form gives negative expression there. The stale-phenotype bug of <code>Fig5.r</code> does not exist here: phenotypes are always recomputed from the mutated genotype.</li>
+<li>Motif 5 (mutual activation): when <span class="math inline">\(\alpha_1\alpha_2 &lt; \theta^2\)</span> the network goes to the zero state, which is what the dynamics do; the closed form gives negative expression there. The stale-phenotype bug of <code>Fig5.r</code> does not exist here: phenotypes are always recomputed from the mutated genotype.</li>
 <li>Individuals whose development fails (no stable steady state) get zero fitness by default (<code>invalid = "lethal"</code>); <code>invalid = "reject"</code> discards the offending mutation instead.</li>
 <li>Random numbers are drawn differently, so runs reproduce the paper’s results statistically, not draw for draw.</li>
 </ul>

@@ -1,6 +1,7 @@
 url: https://diogro.github.io/grnland/
 template:
   bootstrap: 5
+  math-rendering: mathjax
   bslib:
     preset: flatly
     primary: "#2C6E8F"

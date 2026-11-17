@@ -6,7 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Getting started with grnland • grnland</title>
-<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -77,23 +83,19 @@ the population evolves.</p>
 <strong>landscape</strong>, and <strong>simulate</strong> a population
 on it.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diogro.github.io/grnland/">grnland</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diogro/grnland" class="external-link">grnland</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="define-a-network">1. Define a network<a class="anchor" aria-label="anchor" href="#define-a-network"></a>
 </h2>
 <p>Networks are written as edges: <code>"a -&gt; b"</code> means <em>a
 activates b</em>, <code>"a -| b"</code> means <em>a represses b</em>.
 Each gene follows Hill-type kinetics,</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>x</mi><mo accent="true">̇</mo></mover><mi>i</mi></msub><mo>=</mo><msub><mi>α</mi><mi>i</mi></msub><munder><mo>∏</mo><mi>j</mi></munder><msub><mi>H</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>j</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><msub><mi>γ</mi><mi>i</mi></msub><msub><mi>x</mi><mi>i</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">\dot x_i = \alpha_i \prod_j H_{ij}(x_j) - \gamma_i x_i,</annotation></semantics></math></p>
-<p>with production rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math>,
-decay rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>γ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\gamma_i</annotation></semantics></math>,
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msup><mi>x</mi><mi>h</mi></msup><mi>/</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>θ</mi><mi>h</mi></msup><mo>+</mo><msup><mi>x</mi><mi>h</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">H_{ij}(x) = x^h/(\theta^h + x^h)</annotation></semantics></math>
-for activation,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><msup><mi>x</mi><mi>h</mi></msup><mi>/</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>θ</mi><mi>h</mi></msup><mo>+</mo><msup><mi>x</mi><mi>h</mi></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">1 - x^h/(\theta^h + x^h)</annotation></semantics></math>
-for repression.</p>
+<p><span class="math display">\[\dot x_i = \alpha_i \prod_j H_{ij}(x_j)
+- \gamma_i x_i,\]</span></p>
+<p>with production rate <span class="math inline">\(\alpha_i\)</span>,
+decay rate <span class="math inline">\(\gamma_i\)</span>, and <span class="math inline">\(H_{ij}(x) = x^h/(\theta^h + x^h)\)</span> for
+activation, <span class="math inline">\(1 - x^h/(\theta^h +
+x^h)\)</span> for repression.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/grn.html">grn</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a -&gt; b"</span>, <span class="st">"b -| c"</span>, <span class="st">"c -&gt; a"</span>, <span class="st">"a -| c"</span><span class="op">)</span>,</span>
 <span>         alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">6</span>, <span class="fl">8</span><span class="op">)</span>, theta <span class="op">=</span> <span class="fl">3</span>,</span>
@@ -138,19 +140,11 @@ that develops into a target phenotype:</p>
 <div class="section level3">
 <h3 id="sensitivities-and-the-m-matrix">Sensitivities and the M-matrix<a class="anchor" aria-label="anchor" href="#sensitivities-and-the-m-matrix"></a>
 </h3>
-<p>The sensitivity matrix
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mi>∂</mi><msup><mi>x</mi><mo>*</mo></msup><mi>/</mi><mi>∂</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">S = \partial x^*/\partial p</annotation></semantics></math>
-is computed analytically from the Jacobian of the dynamics
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo>=</mo><mi>−</mi><msup><mi>J</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><mspace width="0.167em"></mspace><mi>∂</mi><mi>f</mi><mi>/</mi><mi>∂</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">S = -J^{-1}\,\partial f/\partial p</annotation></semantics></math>).
-With per-locus mutation rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>
-and mutational effect
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>,
-the M-matrix is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mo>=</mo><mi>S</mi><mspace width="0.167em"></mspace><mi mathvariant="normal">Σ</mi><mspace width="0.167em"></mspace><msup><mi>S</mi><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">M = S\,\Sigma\,S^\top</annotation></semantics></math>
-with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Σ</mi><mo>=</mo><mi>μ</mi><msup><mi>σ</mi><mn>2</mn></msup><mi>I</mi></mrow><annotation encoding="application/x-tex">\Sigma = \mu\sigma^2 I</annotation></semantics></math>
-(times the ploidy).</p>
+<p>The sensitivity matrix <span class="math inline">\(S = \partial
+x^*/\partial p\)</span> is computed analytically from the Jacobian of
+the dynamics (<span class="math inline">\(S = -J^{-1}\,\partial
+f/\partial p\)</span>). With per-locus mutation rate <span class="math inline">\(\mu\)</span> and mutational effect <span class="math inline">\(\sigma\)</span>, the M-matrix is <span class="math inline">\(M = S\,\Sigma\,S^\top\)</span> with <span class="math inline">\(\Sigma = \mu\sigma^2 I\)</span> (times the
+ploidy).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/m_matrix.html">m_matrix</a></span><span class="op">(</span><span class="va">mot</span>, phenotype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">6</span><span class="op">)</span>, mu <span class="op">=</span> <span class="fl">0.01</span>, sigma <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              x1           x2</span></span>
@@ -289,9 +283,8 @@ ODE right-hand side, for regulatory logic the Hill model cannot express
 <span><span class="co">#&gt;        x1        x2 </span></span>
 <span><span class="co">#&gt; 2.0000000 0.9714286</span></span></code></pre></div>
 <p><strong>Linear maps.</strong> <code>gp_linear(B)</code> gives the
-linear genotype-phenotype map
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>B</mi><mi>α</mi></mrow><annotation encoding="application/x-tex">x = B\alpha</annotation></semantics></math>,
-with a constant M-matrix, a useful null model:</p>
+linear genotype-phenotype map <span class="math inline">\(x =
+B\alpha\)</span>, with a constant M-matrix, a useful null model:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gp_linear.html">gp_linear</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/m_matrix.html">m_matrix</a></span><span class="op">(</span><span class="va">lin</span>, phenotype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
@@ -300,11 +293,9 @@ with a constant M-matrix, a useful null model:</p>
 <span><span class="co">#&gt; x2 0.0001111111 0.0001138889</span></span></code></pre></div>
 <p><strong>Basins under the Lande equation.</strong>
 <code><a href="../reference/lande_separatrices.html">lande_separatrices()</a></code> traces basin borders for deterministic
-evolution
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mover><mi>z</mi><mo accent="true">‾</mo></mover><mo accent="true">̇</mo></mover><mo>=</mo><mi>G</mi><mspace width="0.167em"></mspace><mi>∇</mi><mi>W</mi></mrow><annotation encoding="application/x-tex">\dot{\bar z} = G\,\nabla W</annotation></semantics></math>
-with
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mo>∝</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">G \propto M</annotation></semantics></math>,
-which can be compared with simulated outcomes.</p>
+evolution <span class="math inline">\(\dot{\bar z} = G\,\nabla
+W\)</span> with <span class="math inline">\(G \propto M\)</span>, which
+can be compared with simulated outcomes.</p>
 <p><strong>More traits.</strong> Nothing is specific to two traits:
 networks can have any number of genes, and <code>traits</code> chooses
 which are selected. Landscapes in more dimensions can be Gaussian,

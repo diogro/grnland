@@ -24,14 +24,14 @@ PAPER <- list(N = 1000, generations = 10000, mu = 0.01, sigma = 0.05,
 ## The six motifs
 
 Every figure compares the same six two-gene networks. Each gene has its
-own production rate $`\alpha_i`$ as the evolving locus; the motifs
+own production rate \\\alpha_i\\ as the evolving locus; the motifs
 differ only in how the two genes regulate each other.
 
 | Motif | Regulation | [`paper_motif()`](https://diogro.github.io/grnland/reference/paper_motif.md) |
 |----|----|----|
-| 1 | $`x_1 \to x_2`$ | `paper_motif(1)` |
-| 2 | $`x_1 \dashv x_2`$ | `paper_motif(2)` |
-| 3 | $`x_1 \to x_2`$, $`x_2 \dashv x_1`$ | `paper_motif(3)` |
+| 1 | \\x_1 \to x_2\\ | `paper_motif(1)` |
+| 2 | \\x_1 \dashv x_2\\ | `paper_motif(2)` |
+| 3 | \\x_1 \to x_2\\, \\x_2 \dashv x_1\\ | `paper_motif(3)` |
 | 4 | mutual repression | `paper_motif(4)` |
 | 5 | mutual activation | `paper_motif(5)` |
 | 6 | no regulation | `paper_motif(6)` |
@@ -44,7 +44,7 @@ from the same phenotype on the same rugged landscape. Because their
 M-matrices point in different directions (panel B), they climb to
 different peaks (panels A and C), and every one of 10 replicate
 populations per motif ends on the peak predicted by the deterministic
-Lande equation $`\dot{\bar z} = M\nabla W`$.
+Lande equation \\\dot{\bar z} = M\nabla W\\.
 
 ![](figures/motif_example.png)
 
@@ -76,12 +76,12 @@ and motifs 2 and 4 each reach a different one:
 
 ## Fig 1: linear genotype-phenotype maps
 
-*Script: `analysis/fig1_linear_maps.R`.* With a linear map
-$`x = B\alpha`$ the M-matrix is constant, $`M = \mu\sigma^2 BB^\top`$.
-Three maps (no covariance, positive, negative) evolve on a single peak
-(A) and on a two-peak landscape (B), where outcomes from a grid of
-starts are classified by an SVM (white borders) and compared with the
-separatrix of the Lande equation (dashed).
+*Script: `analysis/fig1_linear_maps.R`.* With a linear map \\x =
+B\alpha\\ the M-matrix is constant, \\M = \mu\sigma^2 BB^\top\\. Three
+maps (no covariance, positive, negative) evolve on a single peak (A) and
+on a two-peak landscape (B), where outcomes from a grid of starts are
+classified by an SVM (white borders) and compared with the separatrix of
+the Lande equation (dashed).
 
 ``` r
 
@@ -98,9 +98,9 @@ lande <- lande_separatrices(models$B2, land, lower = -5, upper = 15)
 ## Fig 2: M-matrices across phenotype space
 
 *Script: `analysis/fig2_m_matrices.R`.* M-matrices of each motif over a
-grid of phenotypes, with the sensitivity vectors
-$`\partial x/\partial\alpha_i`$. Regulation makes M vary in size, shape
-and orientation across phenotype space.
+grid of phenotypes, with the sensitivity vectors \\\partial
+x/\partial\alpha_i\\. Regulation makes M vary in size, shape and
+orientation across phenotype space.
 
 ``` r
 
