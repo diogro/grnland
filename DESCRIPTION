@@ -27,7 +27,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
-URL: https://github.com/diogro/grnland
+URL: https://diogro.github.io/grnland/, https://github.com/diogro/grnland
 BugReports: https://github.com/diogro/grnland/issues
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.1.1
