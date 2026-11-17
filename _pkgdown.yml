@@ -1,18 +1,27 @@
 url: https://diogro.github.io/grnland/
+
+# Shared site layout (same in stanimal, indri, grnland, evomod2): build with
+# `Rscript pkgdown/build_site.R`; the look is in pkgdown/extra.scss and only
+# the accent colour below is per package. The home page is the README.
 template:
   bootstrap: 5
+  light-switch: true
   math-rendering: mathjax
   bslib:
-    preset: flatly
-    primary: "#2C6E8F"
+    primary: "#2c6e8f"
 
 home:
   title: "grnland: evolution of gene regulatory networks on adaptive landscapes"
+  links:
+  - text: Guide for agents (AGENTS.md)
+    href: https://github.com/diogro/grnland/blob/main/AGENTS.md
+  - text: Developer notes (DEVELOPMENT.md)
+    href: https://github.com/diogro/grnland/blob/main/DEVELOPMENT.md
 
 navbar:
   structure:
-    left: [intro, reference, articles]
-    right: [search, github]
+    left: [intro, articles, reference, news]
+    right: [search, github, lightswitch]
 
 articles:
 - title: Articles

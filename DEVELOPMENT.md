@@ -177,9 +177,11 @@ Keep tests fast (the whole suite runs in about a minute) and seeded.
   `.Rbuildignore`). It shows code without running it and embeds images from
   `vignettes/articles/figures/`, which are copied from `analysis/figures/`.
   When the full figure runs are done, copy the new images over.
-- The site: `pkgdown::build_site()` writes `docs/`, which is committed and
-  served by GitHub Pages from `main`/`docs`. Equations use MathJax
-  (`math-rendering: mathjax` in `_pkgdown.yml`).
+- The site: `Rscript pkgdown/build_site.R` writes `docs/`, which is committed
+  and served by GitHub Pages from `main`/`docs`. The home page is the README.
+  Equations use MathJax (`math-rendering: mathjax` in `_pkgdown.yml`).
+  `pkgdown/build_site.R` and `pkgdown/extra.scss` are shared with the sibling
+  packages' sites; keep the copies identical.
 
 ## Paper analyses
 
@@ -193,5 +195,5 @@ threads (`OPENBLAS_NUM_THREADS=1` etc.) when running them in parallel.
 1. Bump `Version` in `DESCRIPTION`.
 2. Run `devtools::document()`, `devtools::test()`, then
    `R CMD build . && R CMD check --no-manual grnland_*.tar.gz`.
-3. Rebuild the site with `pkgdown::build_site()` and commit `docs/`.
+3. Rebuild the site with `Rscript pkgdown/build_site.R` and commit `docs/`.
 4. Tag the release (`git tag v0.x.y`) and push the tag.

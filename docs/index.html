@@ -12,7 +12,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</script><script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -24,7 +24,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="index.html">grnland</a>
 
@@ -38,19 +38,27 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="articles/grnland.html">Get started</a></li>
-<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/paper-figures.html">Paper figures and examples</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/diogro/grnland/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
+<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
+  </ul>
+</li>
       </ul>
 </div>
 
@@ -74,7 +82,7 @@
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diogro/grnland" class="external-link">grnland</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diogro.github.io/grnland/">grnland</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/paper_motif.html">paper_motif</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>                                   <span class="co"># mutual activation</span></span>
 <span><span class="va">land</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/landscapes.html">landscape_gaussian</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">3</span><span class="op">)</span>, omega <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>        <span class="co"># one Gaussian peak</span></span>
@@ -108,7 +116,7 @@
 <p><span class="math display">\[\dot x_i = \alpha_i \prod_j H_{ij}(x_j) - \gamma_i x_i,\]</span></p>
 <p>where <span class="math inline">\(H_{ij}(x) = x^h/(\theta^h + x^h)\)</span> if gene <span class="math inline">\(j\)</span> activates gene <span class="math inline">\(i\)</span>, <span class="math inline">\(1 - x^h/(\theta^h + x^h)\)</span> if <span class="math inline">\(j\)</span> represses <span class="math inline">\(i\)</span>, and 1 if they don’t interact (<span class="math inline">\(\theta = \theta_{ij}\)</span>, <span class="math inline">\(h = h_{ij}\)</span>). The phenotype is the steady state that development reaches.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/diogro/grnland" class="external-link">grnland</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diogro.github.io/grnland/">grnland</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># edges: "a -&gt; b" activation, "a -| b" repression; self-regulation allowed</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grn.html">grn</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a -&gt; b"</span>, <span class="st">"b -| c"</span>, <span class="st">"c -&gt; a"</span>, <span class="st">"a -| c"</span><span class="op">)</span>,</span>
@@ -194,6 +202,8 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/diogro/grnland/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/diogro/grnland/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/diogro/grnland/blob/main/AGENTS.md" class="external-link">Guide for agents (AGENTS.md)</a></li>
+<li><a href="https://github.com/diogro/grnland/blob/main/DEVELOPMENT.md" class="external-link">Developer notes (DEVELOPMENT.md)</a></li>
 </ul>
 </div>
 
