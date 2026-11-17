@@ -9,12 +9,38 @@ networks with any number of genes and any regulatory structure.
 ## Installation
 
 ```r
-# from a local clone
-devtools::install("path/to/grnland")
+# install.packages("remotes")
+remotes::install_github("diogro/grnland", build_vignettes = TRUE)
 ```
 
-Requires a C++ compiler (Rcpp/RcppArmadillo). `ambient` is needed for Perlin
-landscapes.
+The repository is private for now, so `install_github()` needs a GitHub
+token with access to it (`usethis::create_github_token()`, then set
+`GITHUB_PAT`). A C++ compiler is required (Rcpp/RcppArmadillo); `ambient` is
+needed for Perlin landscapes.
+
+## Quick start
+
+```r
+library(grnland)
+
+m <- paper_motif(5)                                   # mutual activation
+land <- landscape_gaussian(c(5, 3), omega = 4)        # one Gaussian peak
+m_matrix(m, phenotype = c(2, 6))                      # mutational variance at the start
+sim <- simulate_population(m, land, start = c(2, 6), N = 500, generations = 3000,
+                           stop = stop_at_peaks(matrix(c(5, 3), 1)), seed = 1)
+sim
+plot(sim$trajectory$mean_x1, sim$trajectory$mean_x2, type = "l")
+```
+
+## Documentation
+
+- `vignette("grnland")`: getting started, from defining a network to
+  simulating it.
+- *Paper figures and examples* (article on the package website, source in
+  `vignettes/articles/`): how each figure of the paper is built, and an
+  example where the six motifs reach different peaks from the same start.
+- The website is built with `pkgdown::build_site()` into `docs/`.
+- `analysis/` holds the scripts that reproduce the paper figures.
 
 ## Models
 

@@ -22,6 +22,12 @@ LinkingTo:
     RcppArmadillo
 Suggests:
     ambient,
+    ggplot2,
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
+VignetteBuilder: knitr
+URL: https://github.com/diogro/grnland
+BugReports: https://github.com/diogro/grnland/issues
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.1.1

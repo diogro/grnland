@@ -7,3 +7,6 @@ src/*.o
 src/*.so
 analysis/output/
 analysis/figures/quick/
+docs/
+inst/doc
+analysis/figures/

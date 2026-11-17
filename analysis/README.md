@@ -12,6 +12,8 @@ original scripts in the `GRN_Landscapes` repository.
 | `fig4_fig5_complexity.R` | Fig 4, Fig 5 | `Fig5.r` (Fig 4); none for Fig 5 |
 | `fig6_trajectories.R` | Fig 6 | `Fig6.r` |
 | `figS3_perlin.R` | Fig S3 | none |
+| `fig6_search.R` | (search for a Fig 6 example) | none |
+| `motif_example.R` | `motif_example.png`: the six motifs reach different peaks from one start | none |
 
 ## Running
 

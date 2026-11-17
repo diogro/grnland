@@ -1,0 +1,54 @@
+url: ~
+template:
+  bootstrap: 5
+  bslib:
+    preset: flatly
+    primary: "#2C6E8F"
+
+home:
+  title: "grnland: evolution of gene regulatory networks on adaptive landscapes"
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [search, github]
+
+articles:
+- title: Articles
+  navbar: ~
+  contents:
+  - grnland
+  - articles/paper-figures
+
+reference:
+- title: Networks
+  desc: Genotype-phenotype maps built from gene regulatory networks.
+  contents:
+  - grn
+  - paper_motif
+  - grn_custom
+  - gp_linear
+  - loci_names
+- title: Development and variation
+  desc: From genotypes to phenotypes, and the variation mutation produces.
+  contents:
+  - default_genotype
+  - develop
+  - phenotype
+  - genotype_at
+  - sensitivity
+  - m_matrix
+- title: Landscapes
+  contents:
+  - landscapes
+  - find_peaks
+  - lande_separatrices
+- title: Simulation
+  contents:
+  - simulate_population
+  - selection
+  - stop_at_peaks
+  - nearest_peak
+- title: Package
+  contents:
+  - grnland-package
