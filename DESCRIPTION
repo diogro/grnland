@@ -1,0 +1,27 @@
+Package: grnland
+Type: Package
+Title: Evolution of Gene Regulatory Networks on Adaptive Landscapes
+Version: 0.1.0
+Authors@R: c(
+    person("Christoph", "Netz", role = "aut"),
+    person("Diogo", "Melo", role = c("aut", "cre"), email = "diogro@gmail.com"),
+    person("Lisandro", "Milocco", role = "aut"))
+Description: Individual-based simulations of populations whose phenotypes are
+    the steady states of gene regulatory networks, evolving on arbitrary
+    adaptive landscapes. Networks have any number of genes and arbitrary
+    activating or repressing interactions (Hill-type kinetics), or are given as
+    user-defined ODE systems. Provides analytical sensitivities and
+    mutational (M) matrices of the genotype-phenotype map.
+License: GPL-3
+Encoding: UTF-8
+Imports:
+    Rcpp,
+    stats
+LinkingTo:
+    Rcpp,
+    RcppArmadillo
+Suggests:
+    ambient,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1
