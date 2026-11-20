@@ -78,3 +78,24 @@ test_that("record_genotype records genotype means and covariances", {
   expect_equal(unlist(last[paste0("gmean_", loci_names(m))]), colMeans(G), ignore_attr = TRUE)
   expect_equal(last[["G_alpha[x1]_theta[x2,x1]"]], cov(G)[1, 3])
 })
+
+test_that("record_third_moments records third central moments of genotypes", {
+  m <- paper_motif(3, evolvable = c("alpha", "theta[x2,x1]"))
+  land <- landscape_gaussian(c(5, 3), omega = 1)
+  sim <- simulate_population(m, land, start_genotype = c(8, 9.5, 5), N = 200,
+                             generations = 50, mu = 0.05, sigma = 0.1, record_every = 25,
+                             selection = selection_proportional(), record_third_moments = TRUE,
+                             seed = 3)
+  tr <- sim$trajectory
+  ln <- loci_names(m)
+  g3 <- grep("^G3_", names(tr), value = TRUE)
+  expect_length(g3, 10)
+  expect_false(any(grepl("^gmean_", names(tr))))
+  expect_equal(unlist(tr[1, g3]), rep(0, 10), ignore_attr = TRUE)
+  G <- sim$final$genotypes[!sim$final$invalid, , drop = FALSE]
+  D <- sweep(G, 2, colMeans(G))
+  last <- tr[nrow(tr), ]
+  expect_equal(last[[sprintf("G3_%s_%s_%s", ln[1], ln[1], ln[3])]], mean(D[, 1]^2 * D[, 3]))
+  expect_equal(last[[sprintf("G3_%s_%s_%s", ln[3], ln[3], ln[3])]], mean(D[, 3]^3))
+  expect_equal(last[[sprintf("G3_%s_%s_%s", ln[1], ln[2], ln[3])]], mean(D[, 1] * D[, 2] * D[, 3]))
+})

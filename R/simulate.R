@@ -118,13 +118,17 @@ stop_at_peaks <- function(peaks, radius = 0.1, fraction = 0.5, every = 10,
 #' @param record_genotype Also record the mean genotypic value of each locus
 #'   (`gmean_<locus>`) and the genotypic covariance matrix of the loci
 #'   (`G_<locus>_<locus>`, upper triangle), over individuals that develop.
+#' @param record_third_moments Also record the third central moments of the
+#'   genotypic values, E[(g_i - mean_i)(g_j - mean_j)(g_k - mean_k)] for
+#'   i <= j <= k (`G3_<locus>_<locus>_<locus>`; divisor n, not n - 1), over
+#'   individuals that develop.
 #' @param stop Optional stopping rule, see [stop_at_peaks()].
 #' @param seed Optional RNG seed.
 #' @param dev_args List of extra arguments for [develop()].
 #' @return An object of class `grn_sim`: a list with `trajectory` (data frame
 #'   of generation, trait means, phenotypic (co)variances `P_*`, mean fitness
 #'   and number of failed developments; plus `M_*` if `record_m`, and
-#'   `gmean_*`, `G_*` if `record_genotype`), `outcome`
+#'   `gmean_*`, `G_*` if `record_genotype`; `G3_*` if `record_third_moments`), `outcome`
 #'   (index of the peak reached, or `NA`), `generations` run, and `final`
 #'   (alleles, genotypes, phenotypes and fitness of the last generation).
 #'   With clonal reproduction and no environmental noise the phenotypic
@@ -136,6 +140,7 @@ simulate_population <- function(model, landscape, start = NULL, start_genotype =
                                 sexes = TRUE, selection = selection_relative_min(),
                                 lower = 0, upper = Inf, invalid = c("lethal", "reject"),
                                 record_every = 10, record_m = FALSE, record_genotype = FALSE,
+                                record_third_moments = FALSE,
                                 stop = NULL,
                                 seed = NULL, dev_args = list()) {
   reproduction <- match.arg(reproduction)
@@ -172,10 +177,15 @@ simulate_population <- function(model, landscape, start = NULL, start_genotype =
   cov_names <- sprintf("P_%s_%s", tn[cov_idx[, 1]], tn[cov_idx[, 2]])
   ln <- model$loci$name
   g_idx <- which(upper.tri(diag(L), diag = TRUE), arr.ind = TRUE)
+  g3_idx <- as.matrix(expand.grid(i = seq_len(L), j = seq_len(L), k = seq_len(L)))
+  g3_idx <- g3_idx[g3_idx[, 1] <= g3_idx[, 2] & g3_idx[, 2] <= g3_idx[, 3], , drop = FALSE]
+  g3_idx <- g3_idx[order(g3_idx[, 1], g3_idx[, 2], g3_idx[, 3]), , drop = FALSE]
   rec_cols <- c("generation", paste0("mean_", tn), cov_names, "mean_fitness", "n_invalid",
                 if (record_m) sub("^P_", "M_", cov_names),
                 if (record_genotype) c(paste0("gmean_", ln),
-                                       sprintf("G_%s_%s", ln[g_idx[, 1]], ln[g_idx[, 2]])))
+                                       sprintf("G_%s_%s", ln[g_idx[, 1]], ln[g_idx[, 2]])),
+                if (record_third_moments) sprintf("G3_%s_%s_%s", ln[g3_idx[, 1]], ln[g3_idx[, 2]],
+                                                  ln[g3_idx[, 3]]))
   rec <- matrix(NA_real_, generations %/% record_every + 2, length(rec_cols),
                 dimnames = list(NULL, rec_cols))
   nrec <- 0
@@ -193,6 +203,14 @@ simulate_population <- function(model, landscape, start = NULL, start_genotype =
       Gt <- matrix(genotype(A), N)[!bad, , drop = FALSE]
       GC <- if (nrow(Gt) > 1) stats::cov(Gt) else matrix(0, L, L)
       row <- c(row, colMeans(Gt), GC[g_idx])
+    }
+    if (record_third_moments) {
+      Gt <- matrix(genotype(A), N)[!bad, , drop = FALSE]
+      D <- sweep(Gt, 2, colMeans(Gt))
+      row <- c(row, if (nrow(D) > 0)
+        colMeans(D[, g3_idx[, 1], drop = FALSE] * D[, g3_idx[, 2], drop = FALSE] *
+                 D[, g3_idx[, 3], drop = FALSE])
+        else rep(NA_real_, nrow(g3_idx)))
     }
     nrec <<- nrec + 1
     rec[nrec, ] <<- row

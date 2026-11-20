@@ -23,6 +23,7 @@ simulate_population(
   record_every = 10,
   record_m = FALSE,
   record_genotype = FALSE,
+  record_third_moments = FALSE,
   stop = NULL,
   seed = NULL,
   dev_args = list()
@@ -70,6 +71,11 @@ generations (the first and last generations are always recorded).}
 (`gmean_<locus>`) and the genotypic covariance matrix of the loci
 (`G_<locus>_<locus>`, upper triangle), over individuals that develop.}
 
+\item{record_third_moments}{Also record the third central moments of the
+genotypic values, E[(g_i - mean_i)(g_j - mean_j)(g_k - mean_k)] for
+i <= j <= k (`G3_<locus>_<locus>_<locus>`; divisor n, not n - 1), over
+individuals that develop.}
+
 \item{stop}{Optional stopping rule, see [stop_at_peaks()].}
 
 \item{seed}{Optional RNG seed.}
@@ -80,7 +86,7 @@ generations (the first and last generations are always recorded).}
 An object of class `grn_sim`: a list with `trajectory` (data frame
   of generation, trait means, phenotypic (co)variances `P_*`, mean fitness
   and number of failed developments; plus `M_*` if `record_m`, and
-  `gmean_*`, `G_*` if `record_genotype`), `outcome`
+  `gmean_*`, `G_*` if `record_genotype`; `G3_*` if `record_third_moments`), `outcome`
   (index of the peak reached, or `NA`), `generations` run, and `final`
   (alleles, genotypes, phenotypes and fitness of the last generation).
   With clonal reproduction and no environmental noise the phenotypic
