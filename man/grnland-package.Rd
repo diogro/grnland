@@ -8,6 +8,15 @@
 \description{
 Individual-based simulations of populations whose phenotypes are the steady states of gene regulatory networks, evolving on arbitrary adaptive landscapes. Networks have any number of genes and arbitrary activating or repressing interactions (Hill-type kinetics), or are given as user-defined ODE systems. Provides analytical sensitivities and mutational (M) matrices of the genotype-phenotype map.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://diogro.github.io/grnland/}
+  \item \url{https://github.com/diogro/grnland}
+  \item Report bugs at \url{https://github.com/diogro/grnland/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Diogo Melo \email{diogro@gmail.com}
 

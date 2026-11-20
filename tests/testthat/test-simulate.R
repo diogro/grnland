@@ -62,3 +62,19 @@ test_that("find_peaks merges duplicate maxima on flat tops", {
   expect_equal(nrow(find_peaks(flat, 0, 10, res = 400)), 1)
   expect_gt(nrow(find_peaks(flat, 0, 10, res = 400, merge = 0)), 1)
 })
+
+test_that("record_genotype records genotype means and covariances", {
+  m <- paper_motif(3, evolvable = c("alpha", "theta[x2,x1]"))
+  land <- landscape_gaussian(c(5, 3), omega = 1)
+  sim <- simulate_population(m, land, start_genotype = c(8, 9.5, 5), N = 200,
+                             generations = 50, mu = 0.05, sigma = 0.1, record_every = 25,
+                             selection = selection_proportional(), record_genotype = TRUE, seed = 3)
+  tr <- sim$trajectory
+  expect_true(all(c("gmean_alpha[x1]", "gmean_theta[x2,x1]",
+                    "G_alpha[x1]_alpha[x2]", "G_theta[x2,x1]_theta[x2,x1]") %in% names(tr)))
+  expect_equal(unlist(tr[1, paste0("gmean_", loci_names(m))]), c(8, 9.5, 5), ignore_attr = TRUE)
+  last <- tr[nrow(tr), ]
+  G <- sim$final$genotypes[!sim$final$invalid, , drop = FALSE]
+  expect_equal(unlist(last[paste0("gmean_", loci_names(m))]), colMeans(G), ignore_attr = TRUE)
+  expect_equal(last[["G_alpha[x1]_theta[x2,x1]"]], cov(G)[1, 3])
+})
