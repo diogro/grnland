@@ -59,6 +59,8 @@ reference:
   - selection
   - stop_at_peaks
   - nearest_peak
+  - develop_unique
+  - dev_key_exact
 - title: Package
   contents:
   - grnland-package

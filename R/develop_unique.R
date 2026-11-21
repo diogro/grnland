@@ -1,10 +1,10 @@
 #' Develop each distinct individual once
 #'
 #' Wraps a development function so that individuals with the same key are
-#' developed only once and share the result. In sexual populations most
-#' offspring repeat a genotype that is already present, so this saves most of
-#' the development time. In clonal populations only mutants are developed,
-#' and they are almost always distinct, so it changes little.
+#' developed only once and share the result. This saves time when many new
+#' individuals share a genotype, as with discrete allelic values (few alleles
+#' per locus, recombined in sexual populations). With continuous mutational
+#' effects nearly every genotype is distinct, and it only adds overhead.
 #'
 #' The wrapper is independent of the simulation loop. It applies to any
 #' function `dev(G, X0)` that returns a list whose elements have one row (or
