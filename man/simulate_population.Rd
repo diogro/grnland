@@ -80,7 +80,10 @@ individuals that develop.}
 
 \item{seed}{Optional RNG seed.}
 
-\item{dev_args}{List of extra arguments for [develop()].}
+\item{dev_args}{List of extra arguments for [develop()], e.g.
+`list(newton_radius = 0)` to always integrate instead of starting
+development of new individuals with Newton's method from the parent's
+expression state (the default, much faster; see [develop()]).}
 }
 \value{
 An object of class `grn_sim`: a list with `trajectory` (data frame

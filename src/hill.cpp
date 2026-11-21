@@ -198,11 +198,51 @@ int integrate(const Net& m, arma::vec& x, double thresh, double tmax,
   return 1;
 }
 
-// Develop from x (in place) to a steady state.
+inline bool is_stable(const Net& m, const arma::vec& x) {
+  arma::cx_vec ev = arma::eig_gen(jac(m, x));
+  return arma::max(arma::real(ev)) < 0;
+}
+
+// Newton start: solve f(x) = 0 directly from the starting state x0, for starts
+// close to the steady state (e.g. an offspring starting from its parent's
+// expression). Accepted only if Newton converges within a few iterations to a
+// non-negative, stable steady state within `radius` (relative, max-norm) of
+// x0, and the flow at x0 points toward it. The last condition keeps
+// development on the attractor that integration from x0 reaches: it rejects
+// a jump across a nearby unstable state into another basin. On success x is
+// replaced by the steady state and true is returned.
+bool newton_start(const Net& m, arma::vec& x, double tol, double radius) {
+  arma::vec f0 = rhs(m, x);
+  if (!f0.is_finite()) return false;
+  arma::vec xn = x, f = f0;
+  double lim = radius * (1.0 + arma::norm(x, "inf"));
+  bool ok = false;
+  for (int it = 0; it < 8; ++it) {
+    if (fnorm(f, xn) < tol) { ok = true; break; }
+    arma::vec dx;
+    if (!arma::solve(dx, jac(m, xn), -f, arma::solve_opts::no_approx)) return false;
+    xn += dx;
+    if (arma::norm(xn - x, "inf") > lim) return false;
+    f = rhs(m, xn);
+    if (!f.is_finite()) return false;
+  }
+  if (!ok || arma::any(xn < -1e-12)) return false;
+  arma::vec d = xn - x;
+  if (arma::dot(f0, d) < 0) return false;
+  arma::vec xc = arma::clamp(xn, 0.0, arma::datum::inf);
+  if (!is_stable(m, xc)) return false;
+  x = xc;
+  return true;
+}
+
+// Develop from x (in place) to a steady state. With newton_radius > 0, first
+// try a Newton start (see above); otherwise, or if it is not accepted,
+// integrate to a small residual and polish with Newton.
 // Status: 0 = stable steady state, 1 = not converged, 2 = unstable steady
 // state, 3 = non-finite values.
 int develop_one(const Net& m, arma::vec& x, double tol, double tmax,
-                int maxsteps, bool check_stability) {
+                int maxsteps, bool check_stability, double newton_radius) {
+  if (newton_radius > 0 && newton_start(m, x, tol, newton_radius)) return 0;
   double dt = 0.1;
   int s = integrate(m, x, 1e-5, tmax, maxsteps, dt);
   if (s != 0) return s;
@@ -224,10 +264,7 @@ int develop_one(const Net& m, arma::vec& x, double tol, double tmax,
     s = integrate(m, x, tol, tmax, maxsteps, dt);
     if (s != 0) return s;
   }
-  if (check_stability) {
-    arma::cx_vec ev = arma::eig_gen(jac(m, x));
-    if (arma::max(arma::real(ev)) >= 0) return 2;
-  }
+  if (check_stability && !is_stable(m, x)) return 2;
   return 0;
 }
 
@@ -237,7 +274,7 @@ int develop_one(const Net& m, arma::vec& x, double tol, double tmax,
 List hill_develop_cpp(List base, IntegerVector code, IntegerVector li,
                       IntegerVector lj, NumericMatrix G, NumericMatrix X0,
                       double tol, double tmax, int maxsteps,
-                      bool check_stability) {
+                      bool check_stability, double newton_radius) {
   Net proto = make_net(base);
   Loci loci{code, li, lj};
   int N = G.nrow(), n = proto.n;
@@ -250,7 +287,7 @@ List hill_develop_cpp(List base, IntegerVector code, IntegerVector li,
     apply_genotype(m, loci, &G(r, 0), N);
     arma::vec x(n);
     for (int i = 0; i < n; ++i) x(i) = std::max(0.0, X0(r, i));
-    status[r] = develop_one(m, x, tol, tmax, maxsteps, check_stability);
+    status[r] = develop_one(m, x, tol, tmax, maxsteps, check_stability, newton_radius);
     for (int i = 0; i < n; ++i) X(r, i) = x(i);
   }
   return List::create(_["X"] = X, _["status"] = status);

@@ -12,8 +12,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // hill_develop_cpp
-List hill_develop_cpp(List base, IntegerVector code, IntegerVector li, IntegerVector lj, NumericMatrix G, NumericMatrix X0, double tol, double tmax, int maxsteps, bool check_stability);
-RcppExport SEXP _grnland_hill_develop_cpp(SEXP baseSEXP, SEXP codeSEXP, SEXP liSEXP, SEXP ljSEXP, SEXP GSEXP, SEXP X0SEXP, SEXP tolSEXP, SEXP tmaxSEXP, SEXP maxstepsSEXP, SEXP check_stabilitySEXP) {
+List hill_develop_cpp(List base, IntegerVector code, IntegerVector li, IntegerVector lj, NumericMatrix G, NumericMatrix X0, double tol, double tmax, int maxsteps, bool check_stability, double newton_radius);
+RcppExport SEXP _grnland_hill_develop_cpp(SEXP baseSEXP, SEXP codeSEXP, SEXP liSEXP, SEXP ljSEXP, SEXP GSEXP, SEXP X0SEXP, SEXP tolSEXP, SEXP tmaxSEXP, SEXP maxstepsSEXP, SEXP check_stabilitySEXP, SEXP newton_radiusSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -27,7 +27,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type tmax(tmaxSEXP);
     Rcpp::traits::input_parameter< int >::type maxsteps(maxstepsSEXP);
     Rcpp::traits::input_parameter< bool >::type check_stability(check_stabilitySEXP);
-    rcpp_result_gen = Rcpp::wrap(hill_develop_cpp(base, code, li, lj, G, X0, tol, tmax, maxsteps, check_stability));
+    Rcpp::traits::input_parameter< double >::type newton_radius(newton_radiusSEXP);
+    rcpp_result_gen = Rcpp::wrap(hill_develop_cpp(base, code, li, lj, G, X0, tol, tmax, maxsteps, check_stability, newton_radius));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -49,7 +50,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_grnland_hill_develop_cpp", (DL_FUNC) &_grnland_hill_develop_cpp, 10},
+    {"_grnland_hill_develop_cpp", (DL_FUNC) &_grnland_hill_develop_cpp, 11},
     {"_grnland_hill_derivs_cpp", (DL_FUNC) &_grnland_hill_derivs_cpp, 6},
     {NULL, NULL, 0}
 };

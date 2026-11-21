@@ -12,31 +12,42 @@
 #' @param tol Relative tolerance on \eqn{|dx/dt|} at the steady state.
 #' @param tmax,maxsteps Limits on developmental time and integration steps.
 #' @param check_stability Check that the steady state is stable.
+#' @param newton_radius Hill networks: first try to solve for the steady
+#'   state with Newton's method from `x_start`, accepting the result only if
+#'   it is stable, within this relative distance (max-norm) of the start, and
+#'   in the direction the dynamics point at the start; otherwise integrate.
+#'   Much faster when starts are close to the steady state, as for offspring
+#'   developing from their parent's expression. `0` always integrates. Other
+#'   models ignore it.
 #' @return A list with `X`, the full gene-expression matrix, and `status`
 #'   (0 = stable steady state, 1 = no convergence, 2 = unstable steady state,
 #'   3 = non-finite values).
 #' @export
 develop <- function(model, genotypes, x_start = NULL, tol = 1e-10,
-                    tmax = 1e4, maxsteps = 1e5, check_stability = TRUE) {
+                    tmax = 1e4, maxsteps = 1e5, check_stability = TRUE,
+                    newton_radius = 0.1) {
   UseMethod("develop")
 }
 
 #' @export
 develop.hill_grn <- function(model, genotypes, x_start = NULL, tol = 1e-10,
-                             tmax = 1e4, maxsteps = 1e5, check_stability = TRUE) {
+                             tmax = 1e4, maxsteps = 1e5, check_stability = TRUE,
+                             newton_radius = 0.1) {
   G <- as_genotype_matrix(model, genotypes)
   X0 <- start_matrix(model, x_start, nrow(G))
   l <- model$loci
   out <- hill_develop_cpp(hill_base(model), l$code, l$i - 1L,
                           ifelse(is.na(l$j), 0L, l$j - 1L), G, X0,
-                          tol, tmax, as.integer(maxsteps), check_stability)
+                          tol, tmax, as.integer(maxsteps), check_stability,
+                          as.numeric(newton_radius))
   colnames(out$X) <- model$genes
   out
 }
 
 #' @export
 develop.custom_grn <- function(model, genotypes, x_start = NULL, tol = 1e-10,
-                               tmax = 1e4, maxsteps = 1e5, check_stability = TRUE) {
+                               tmax = 1e4, maxsteps = 1e5, check_stability = TRUE,
+                               newton_radius = 0.1) {
   G <- as_genotype_matrix(model, genotypes)
   X0 <- start_matrix(model, x_start, nrow(G))
   N <- nrow(G)

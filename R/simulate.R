@@ -124,7 +124,10 @@ stop_at_peaks <- function(peaks, radius = 0.1, fraction = 0.5, every = 10,
 #'   individuals that develop.
 #' @param stop Optional stopping rule, see [stop_at_peaks()].
 #' @param seed Optional RNG seed.
-#' @param dev_args List of extra arguments for [develop()].
+#' @param dev_args List of extra arguments for [develop()], e.g.
+#'   `list(newton_radius = 0)` to always integrate instead of starting
+#'   development of new individuals with Newton's method from the parent's
+#'   expression state (the default, much faster; see [develop()]).
 #' @return An object of class `grn_sim`: a list with `trajectory` (data frame
 #'   of generation, trait means, phenotypic (co)variances `P_*`, mean fitness
 #'   and number of failed developments; plus `M_*` if `record_m`, and
