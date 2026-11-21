@@ -122,6 +122,12 @@ stop_at_peaks <- function(peaks, radius = 0.1, fraction = 0.5, every = 10,
 #'   genotypic values, E[(g_i - mean_i)(g_j - mean_j)(g_k - mean_k)] for
 #'   i <= j <= k (`G3_<locus>_<locus>_<locus>`; divisor n, not n - 1), over
 #'   individuals that develop.
+#' @param dedupe Develop each distinct new individual once per generation and
+#'   share the result ([develop_unique()]). `"exact"` (default) keys on the
+#'   genotype and the starting expression state and gives the same results as
+#'   `"none"`. `"genotype"` keys on the genotype only, which is faster but can
+#'   pick a different steady state for genotypes with several stable states
+#'   (see [dev_key_genotype()]). Mainly useful with sexual reproduction.
 #' @param stop Optional stopping rule, see [stop_at_peaks()].
 #' @param seed Optional RNG seed.
 #' @param dev_args List of extra arguments for [develop()], e.g.
@@ -144,10 +150,12 @@ simulate_population <- function(model, landscape, start = NULL, start_genotype =
                                 lower = 0, upper = Inf, invalid = c("lethal", "reject"),
                                 record_every = 10, record_m = FALSE, record_genotype = FALSE,
                                 record_third_moments = FALSE,
+                                dedupe = c("exact", "genotype", "none"),
                                 stop = NULL,
                                 seed = NULL, dev_args = list()) {
   reproduction <- match.arg(reproduction)
   invalid <- match.arg(invalid)
+  dedupe <- match.arg(dedupe)
   if (invalid == "reject" && reproduction != "clonal") stop("invalid = 'reject' needs clonal reproduction")
   if (!ploidy %in% 1:2) stop("ploidy must be 1 or 2")
   if (!is.null(seed)) set.seed(seed)
@@ -156,6 +164,10 @@ simulate_population <- function(model, landscape, start = NULL, start_genotype =
   tn <- model$genes[traits]
   sigma <- rep_len(sigma, L)
   dev <- function(G, X0) do.call(develop, c(list(model, G, X0), dev_args))
+  # development of new individuals each generation (optionally de-duplicated)
+  dev_new <- switch(dedupe, none = dev,
+                    exact = develop_unique(dev, dev_key_exact),
+                    genotype = develop_unique(dev, dev_key_genotype))
 
   # ---- initial population
   if (is.null(start_genotype)) {
@@ -275,7 +287,7 @@ simulate_population <- function(model, landscape, start = NULL, start_genotype =
     if (any(changed)) {
       ch <- which(changed)
       Gc <- matrix(genotype(A), N)[ch, , drop = FALSE]
-      d <- dev(Gc, X[ch, , drop = FALSE])
+      d <- dev_new(Gc, X[ch, , drop = FALSE])
       ok <- d$status == 0
       if (invalid == "reject" && any(!ok)) {
         A[ch[!ok], , ] <- A_before[ch[!ok], , , drop = FALSE]

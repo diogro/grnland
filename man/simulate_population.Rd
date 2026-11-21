@@ -24,6 +24,7 @@ simulate_population(
   record_m = FALSE,
   record_genotype = FALSE,
   record_third_moments = FALSE,
+  dedupe = c("exact", "genotype", "none"),
   stop = NULL,
   seed = NULL,
   dev_args = list()
@@ -75,6 +76,13 @@ generations (the first and last generations are always recorded).}
 genotypic values, E[(g_i - mean_i)(g_j - mean_j)(g_k - mean_k)] for
 i <= j <= k (`G3_<locus>_<locus>_<locus>`; divisor n, not n - 1), over
 individuals that develop.}
+
+\item{dedupe}{Develop each distinct new individual once per generation and
+share the result ([develop_unique()]). `"exact"` (default) keys on the
+genotype and the starting expression state and gives the same results as
+`"none"`. `"genotype"` keys on the genotype only, which is faster but can
+pick a different steady state for genotypes with several stable states
+(see [dev_key_genotype()]). Mainly useful with sexual reproduction.}
 
 \item{stop}{Optional stopping rule, see [stop_at_peaks()].}
 
