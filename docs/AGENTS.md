@@ -38,7 +38,7 @@ R CMD INSTALL .                                         # reinstall after any ch
 Rscript -e 'devtools::test()'                           # tests (~1 min)
 Rscript -e 'devtools::document()'                       # after editing roxygen comments
 Rscript -e 'Rcpp::compileAttributes()'                  # after changing exported C++ signatures
-Rscript -e 'pkgdown::build_site(preview = FALSE)'       # rebuild docs/ (installs the package)
+Rscript pkgdown/build_site.R                            # rebuild docs/ (installs the package)
 R CMD build . && R CMD check --no-manual grnland_*.tar.gz
 ```
 
@@ -77,11 +77,10 @@ R CMD build . && R CMD check --no-manual grnland_*.tar.gz
 
 `docs/` is committed and served at <https://diogro.github.io/grnland/>.
 After changing exported functions, the README, the vignette or the
-article, run
-[`pkgdown::build_site()`](https://pkgdown.r-lib.org/reference/build_site.html)
-and commit `docs/` together with the change. The article’s figures in
-`vignettes/articles/figures/` are copied from `analysis/figures/`; most
-are from reduced `QUICK=1` runs, and the article says so.
+article, run `Rscript pkgdown/build_site.R` and commit `docs/` together
+with the change. The article’s figures in `vignettes/articles/figures/`
+are copied from `analysis/figures/`; most are from reduced `QUICK=1`
+runs, and the article says so.
 
 ## Don’ts
 

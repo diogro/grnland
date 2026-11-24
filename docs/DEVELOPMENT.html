@@ -157,7 +157,7 @@
 <code>vignettes/grnland.Rmd</code> is a real vignette, built by <code>R CMD check</code>; it must run in seconds.</li>
 <li>
 <code>vignettes/articles/paper-figures.Rmd</code> is pkgdown-only (excluded in <code>.Rbuildignore</code>). It shows code without running it and embeds images from <code>vignettes/articles/figures/</code>, which are copied from <code>analysis/figures/</code>. When the full figure runs are done, copy the new images over.</li>
-<li>The site: <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> writes <code>docs/</code>, which is committed and served by GitHub Pages from <code>main</code>/<code>docs</code>. Equations use MathJax (<code>math-rendering: mathjax</code> in <code>_pkgdown.yml</code>).</li>
+<li>The site: <code>Rscript pkgdown/build_site.R</code> writes <code>docs/</code>, which is committed and served by GitHub Pages from <code>main</code>/<code>docs</code>. The home page is the README. Equations use MathJax (<code>math-rendering: mathjax</code> in <code>_pkgdown.yml</code>). <code>pkgdown/build_site.R</code> and <code>pkgdown/extra.scss</code> are shared with the sibling packages’ sites; keep the copies identical.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="paper-analyses">Paper analyses<a class="anchor" aria-label="anchor" href="#paper-analyses"></a></h2>
@@ -167,7 +167,7 @@
 <h2 id="releasing">Releasing<a class="anchor" aria-label="anchor" href="#releasing"></a></h2>
 <ol style="list-style-type: decimal"><li>Bump <code>Version</code> in <code>DESCRIPTION</code>.</li>
 <li>Run <code><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">devtools::document()</a></code>, <code><a href="https://devtools.r-lib.org/reference/test.html" class="external-link">devtools::test()</a></code>, then <code>R CMD build . &amp;&amp; R CMD check --no-manual grnland_*.tar.gz</code>.</li>
-<li>Rebuild the site with <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> and commit <code>docs/</code>.</li>
+<li>Rebuild the site with <code>Rscript pkgdown/build_site.R</code> and commit <code>docs/</code>.</li>
 <li>Tag the release (<code>git tag v0.x.y</code>) and push the tag.</li>
 </ol></div>
 </div>

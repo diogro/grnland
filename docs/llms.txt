@@ -237,6 +237,11 @@ From genotypes to phenotypes, and the variation mutation produces.
   : Stop a simulation when the population reaches a peak
 - [`nearest_peak()`](https://diogro.github.io/grnland/reference/nearest_peak.md)
   : Nearest peak to a phenotype
+- [`develop_unique()`](https://diogro.github.io/grnland/reference/develop_unique.md)
+  : Develop each distinct individual once
+- [`dev_key_exact()`](https://diogro.github.io/grnland/reference/dev_key_exact.md)
+  [`dev_key_genotype()`](https://diogro.github.io/grnland/reference/dev_key_exact.md)
+  : Keys for de-duplicated development
 
 ## Package
 

@@ -81,29 +81,33 @@
     
 <p>This article walks through the figures of <em>Developmental Bias
 Shapes Evolution on Complex Adaptive Landscapes</em> (Netz, Melo &amp;
-Milocco) and shows how each is built with grnland. The complete scripts
-are in the <a href="https://github.com/diogro/grnland/tree/main/analysis" class="external-link"><code>analysis/</code></a>
-folder of the repository; the code below shows the essential calls.</p>
-<blockquote>
-<p><strong>About the images.</strong> The full figure runs take many
-core-hours (about 200,000 simulations for Fig 3 and 500,000 for Fig 4),
-so the figures shown here, except the motif example, come from the
-reduced pipeline check (<code>QUICK=1</code>: coarse grids and few
-replicates). They show what each figure contains, not final results.</p>
-</blockquote>
-<p>All scripts share the simulation settings of the original analysis
-code:</p>
+Milocco) and shows how each is built with <code>grnland</code>. The
+complete pure R scripts reproducing all manuscript figures are in the <a href="https://github.com/diogro/GRN_Landscapes" class="external-link"><code>GRN_Landscapes</code></a>
+repository; the code below shows the essential calls.</p>
+<p>All figures come from full diploid sexual simulations matching the
+manuscript:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://diogro.github.io/grnland/">grnland</a></span><span class="op">)</span></span>
-<span><span class="va">PAPER</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fl">1000</span>, generations <span class="op">=</span> <span class="fl">10000</span>, mu <span class="op">=</span> <span class="fl">0.01</span>, sigma <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>              ploidy <span class="op">=</span> <span class="fl">1</span>, reproduction <span class="op">=</span> <span class="st">"clonal"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">PAPER</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  N <span class="op">=</span> <span class="fl">1000L</span>, generations <span class="op">=</span> <span class="fl">10000L</span>, mu <span class="op">=</span> <span class="fl">0.025</span>, sigma <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  ploidy <span class="op">=</span> <span class="fl">2L</span>, reproduction <span class="op">=</span> <span class="st">"sexual"</span>, sexes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  selection <span class="op">=</span> <span class="fu"><a href="../reference/selection.html">selection_relative_min</a></span><span class="op">(</span><span class="fl">0.001</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Simulations stop once the population mean phenotype stays within
+Euclidean distance <span class="math inline">\(0.1\)</span> of the same
+local optimum for two consecutive 10-generation checkpoints (up to the
+generation cap). A companion script (<code>trial_selection.R</code>)
+verifies that standard Wright–Fisher proportional selection
+(<code><a href="../reference/selection.html">selection_proportional()</a></code>) yields virtually identical
+basins (98.2%–98.6% outcome agreement on the complex landscape) and
+complexity/alignment curves.</p>
 <div class="section level2">
 <h2 id="the-six-motifs">The six motifs<a class="anchor" aria-label="anchor" href="#the-six-motifs"></a>
 </h2>
 <p>Every figure compares the same six two-gene networks. Each gene has
 its own production rate <span class="math inline">\(\alpha_i\)</span> as
-the evolving locus; the motifs differ only in how the two genes regulate
-each other.</p>
+the evolving additive diploid locus (<span class="math inline">\(\alpha_i = \alpha_{i,1} + \alpha_{i,2}\)</span>);
+the motifs differ only in how the two genes regulate each other (<span class="math inline">\(\gamma = 1\)</span>, <span class="math inline">\(\theta = 5\)</span>).</p>
 <table class="table">
 <thead><tr class="header">
 <th>Motif</th>
@@ -149,146 +153,162 @@ each other.</p>
 <div class="section level2">
 <h2 id="motifs-reach-different-peaks">Motifs reach different peaks<a class="anchor" aria-label="anchor" href="#motifs-reach-different-peaks"></a>
 </h2>
-<p><em>Script: <code>analysis/motif_example.R</code>.</em> Before the
-paper figures, an example that shows the main idea in one picture. All
-six motifs start from the same phenotype on the same rugged landscape.
+<p><em>Script: <code>motif_example.R</code>.</em> Before the paper
+figures, a single-picture example of the main idea. All six motifs start
+from the same phenotype <code>(2, 12)</code> on the same rugged
+landscape (Perlin frequency <code>0.3</code>, seed <code>4</code>).
 Because their M-matrices point in different directions (panel B), they
-climb to different peaks (panels A and C), and every one of 10 replicate
-populations per motif ends on the peak predicted by the deterministic
-Lande equation <span class="math inline">\(\dot{\bar z} = M\nabla
-W\)</span>.</p>
+climb to three different peaks (panels A and C), and all 10 diploid
+sexual replicates per motif reach the peak predicted by the
+deterministic Lande flow <span class="math inline">\(\dot{\bar z} =
+M\nabla W\)</span>.</p>
 <p><img src="figures/motif_example.png"></p>
-<p>Motifs whose M has positive covariance between the traits (1, 3, 5)
-go to peak C, those with negative covariance (2, 4) to peak A, and the
-unregulated motif 6, with a round M, to peak B.</p>
-<p>The example was found by a screen: for 120 Perlin landscapes and a
-grid of starting points, integrate the Lande flow of each motif and keep
-starts where the motifs reach at least three peaks, robustly to small
-shifts of the start; then check the best candidates with stochastic
-simulations.</p>
+<p>Motifs with positive covariance between the traits (1, 3, 5) go to
+peak A, those with negative covariance (2, 4) to peak C, and the
+unregulated motif 6, with an isotropic M-matrix, to peak B.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">land</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/landscapes.html">landscape_perlin</a></span><span class="op">(</span>frequency <span class="op">=</span> <span class="fl">0.4</span>, seed <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">land</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/landscapes.html">landscape_perlin</a></span><span class="op">(</span>frequency <span class="op">=</span> <span class="fl">0.3</span>, seed <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_peaks.html">find_peaks</a></span><span class="op">(</span><span class="va">land</span>, <span class="fl">0</span>, <span class="fl">20</span>, res <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="va">runs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="../reference/simulate_population.html">simulate_population</a></span><span class="op">(</span><span class="fu"><a href="../reference/paper_motif.html">paper_motif</a></span><span class="op">(</span><span class="va">k</span><span class="op">)</span>, <span class="fu"><a href="../reference/landscapes.html">landscape_grid</a></span><span class="op">(</span><span class="va">land</span>, <span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span>, start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">8</span><span class="op">)</span>,</span>
-<span>                      N <span class="op">=</span> <span class="fl">1000</span>, generations <span class="op">=</span> <span class="fl">10000</span>, mu <span class="op">=</span> <span class="fl">0.01</span>, sigma <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                      stop <span class="op">=</span> <span class="fu"><a href="../reference/stop_at_peaks.html">stop_at_peaks</a></span><span class="op">(</span><span class="va">peaks</span><span class="op">)</span>, record_every <span class="op">=</span> <span class="fl">20</span>, seed <span class="op">=</span> <span class="va">k</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">runs</span>, <span class="va">`[[`</span>, <span class="st">"outcome"</span><span class="op">)</span>   <span class="co"># index of the peak each motif reached</span></span></code></pre></div>
-<p>Another landscape from the same screen, where four motifs share one
-peak and motifs 2 and 4 each reach a different one:</p>
-<p><img src="figures/motif_example_f0.3_s37.png"></p>
+<span>  <span class="fu"><a href="../reference/simulate_population.html">simulate_population</a></span><span class="op">(</span><span class="fu"><a href="../reference/paper_motif.html">paper_motif</a></span><span class="op">(</span><span class="va">k</span><span class="op">)</span>, <span class="fu"><a href="../reference/landscapes.html">landscape_grid</a></span><span class="op">(</span><span class="va">land</span>, <span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span>, start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span>,</span>
+<span>                      N <span class="op">=</span> <span class="fl">1000</span>, generations <span class="op">=</span> <span class="fl">10000</span>, mu <span class="op">=</span> <span class="fl">0.025</span>, sigma <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>                      ploidy <span class="op">=</span> <span class="fl">2</span>, reproduction <span class="op">=</span> <span class="st">"sexual"</span>, sexes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                      record_every <span class="op">=</span> <span class="fl">20</span>, seed <span class="op">=</span> <span class="va">k</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="fig-1-linear-genotype-phenotype-maps">Fig 1: linear genotype-phenotype maps<a class="anchor" aria-label="anchor" href="#fig-1-linear-genotype-phenotype-maps"></a>
 </h2>
-<p><em>Script: <code>analysis/fig1_linear_maps.R</code>.</em> With a
-linear map <span class="math inline">\(x = B\alpha\)</span> the M-matrix
-is constant, <span class="math inline">\(M = \mu\sigma^2
-BB^\top\)</span>. Three maps (no covariance, positive, negative) evolve
-on a single peak (A) and on a two-peak landscape (B), where outcomes
-from a grid of starts are classified by an SVM (white borders) and
-compared with the separatrix of the Lande equation (dashed).</p>
+<p><em>Script: <code>fig1_linear_maps.R</code>.</em> With a linear map
+<span class="math inline">\(x = B\alpha\)</span> the diploid M-matrix is
+constant, <span class="math inline">\(M = 2\mu\sigma^2 BB^\top\)</span>.
+Three equal-determinant maps (no covariance, positive, negative;
+unbounded alleles) evolve on a single Gaussian peak (A) and on a
+two-peak Perlin landscape (B–D; frequency <code>0.15</code>, seed
+<code>96</code>, offset <code>(0, -2.5)</code>, <span class="math inline">\(31 \times 31\)</span> grid, 10 replicates per
+start). Outcomes are classified by an SVM (red border for <span class="math inline">\(\mathbf{B}_1\)</span>, white borders for <span class="math inline">\(\mathbf{B}_2, \mathbf{B}_3\)</span>; 10-fold CV
+accuracies 99.6%, 99.0%, 99.1%) and compared with the deterministic
+Lande separatrix (dashed black).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>B1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>,</span>
 <span>          B2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>          B3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="op">-</span><span class="fl">4</span>, <span class="op">-</span><span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">B</span>, <span class="va">gp_linear</span><span class="op">)</span></span>
-<span><span class="va">land</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/landscapes.html">landscape_perlin</a></span><span class="op">(</span>frequency <span class="op">=</span> <span class="fl">0.1</span>, seed <span class="op">=</span> <span class="fl">324</span><span class="op">)</span></span>
-<span><span class="va">lande</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lande_separatrices.html">lande_separatrices</a></span><span class="op">(</span><span class="va">models</span><span class="op">$</span><span class="va">B2</span>, <span class="va">land</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>, upper <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">land</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/landscapes.html">landscape_perlin</a></span><span class="op">(</span>frequency <span class="op">=</span> <span class="fl">0.15</span>, seed <span class="op">=</span> <span class="fl">96</span>, offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="op">-</span><span class="fl">2.5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">lande</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lande_separatrices.html">lande_separatrices</a></span><span class="op">(</span><span class="va">models</span><span class="op">$</span><span class="va">B2</span>, <span class="va">land</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, upper <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/fig1.png"></p>
 </div>
 <div class="section level2">
 <h2 id="fig-2-m-matrices-across-phenotype-space">Fig 2: M-matrices across phenotype space<a class="anchor" aria-label="anchor" href="#fig-2-m-matrices-across-phenotype-space"></a>
 </h2>
-<p><em>Script: <code>analysis/fig2_m_matrices.R</code>.</em> M-matrices
-of each motif over a grid of phenotypes, with the sensitivity vectors
-<span class="math inline">\(\partial x/\partial\alpha_i\)</span>.
-Regulation makes M vary in size, shape and orientation across phenotype
-space.</p>
+<p><em>Script: <code>fig2_m_matrices.R</code>.</em> Diploid M-matrices
+(<span class="math inline">\(M = 2\mu\sigma^2 S S^\top\)</span>, <span class="math inline">\(\mu = 0.025, \sigma = 0.05\)</span>, 95%
+confidence ellipses magnified 26×) and sensitivity vectors <span class="math inline">\(\partial x/\partial\alpha_i\)</span> (blue for
+<span class="math inline">\(\alpha_1\)</span>, red for <span class="math inline">\(\alpha_2\)</span>) over a <span class="math inline">\(5 \times 5\)</span> grid in <span class="math inline">\([2, 10]^2\)</span>, with pure-R motif topology
+diagrams.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, by <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span>, x2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, by <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">10</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, x2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">10</span>, length.out <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">Ms</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">grid</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="../reference/m_matrix.html">m_matrix</a></span><span class="op">(</span><span class="fu"><a href="../reference/paper_motif.html">paper_motif</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, phenotype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">grid</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/m_matrix.html">m_matrix</a></span><span class="op">(</span><span class="fu"><a href="../reference/paper_motif.html">paper_motif</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, phenotype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">grid</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span><span class="op">)</span>,</span>
+<span>           mu <span class="op">=</span> <span class="fl">0.025</span>, sigma <span class="op">=</span> <span class="fl">0.05</span>, ploidy <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">S</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sensitivity.html">sensitivity</a></span><span class="op">(</span><span class="fu"><a href="../reference/paper_motif.html">paper_motif</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="../reference/genotype_at.html">genotype_at</a></span><span class="op">(</span><span class="fu"><a href="../reference/paper_motif.html">paper_motif</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/fig2.png"></p>
 </div>
 <div class="section level2">
 <h2 id="fig-3-s1-s2-basins-of-attraction">Fig 3, S1, S2: basins of attraction<a class="anchor" aria-label="anchor" href="#fig-3-s1-s2-basins-of-attraction"></a>
 </h2>
-<p><em>Script: <code>analysis/fig3_basins.R</code>.</em> Populations
-start from a 41 × 41 grid of phenotypes (10 replicates each) on a simple
-and a complex Perlin landscape; lines join each start to the peak
-reached. SVM borders between basins differ between motifs (Fig 3
-compares motifs 1 and 2 with the unregulated motif 6 in red), and the
-Lande-equation separatrices predict them (Figs S1, S2).</p>
+<p><em>Script: <code>fig3_basins.R</code>.</em> Diploid sexual
+populations start from a <span class="math inline">\(41 \times
+41\)</span> grid of phenotypes in <span class="math inline">\([2,
+10]^2\)</span> (10 replicates each; 201,720 runs total) on a simple
+(frequency <code>0.1</code>, seed <code>1234</code>) and a complex
+(frequency <code>0.5</code>, seed <code>1245</code>) Perlin landscape.
+SVM basin borders (white; motif 6 reference in red; 10-fold CV
+accuracies 98.3%–99.5% simple, 97.3%–97.9% complex) closely match the
+Lande-equation separatrices (black in Figs. S1 and S2).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">simple</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/landscapes.html">landscape_perlin</a></span><span class="op">(</span>frequency <span class="op">=</span> <span class="fl">0.1</span>, seed <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span></span>
-<span><span class="va">land</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/landscapes.html">landscape_grid</a></span><span class="op">(</span><span class="va">simple</span>, <span class="fl">0</span>, <span class="fl">15</span><span class="op">)</span></span>
-<span><span class="va">peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_peaks.html">find_peaks</a></span><span class="op">(</span><span class="va">simple</span>, <span class="fl">0</span>, <span class="fl">15</span>, res <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="va">land</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/landscapes.html">landscape_grid</a></span><span class="op">(</span><span class="va">simple</span>, <span class="op">-</span><span class="fl">5</span>, <span class="fl">25</span>, step <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span></span>
+<span><span class="va">peaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_peaks.html">find_peaks</a></span><span class="op">(</span><span class="va">simple</span>, <span class="op">-</span><span class="fl">5</span>, <span class="fl">25</span>, res <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_population.html">simulate_population</a></span><span class="op">(</span><span class="fu"><a href="../reference/paper_motif.html">paper_motif</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, <span class="va">land</span>, start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span>                           N <span class="op">=</span> <span class="fl">1000</span>, generations <span class="op">=</span> <span class="fl">10000</span>, mu <span class="op">=</span> <span class="fl">0.01</span>, sigma <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                           stop <span class="op">=</span> <span class="fu"><a href="../reference/stop_at_peaks.html">stop_at_peaks</a></span><span class="op">(</span><span class="va">peaks</span><span class="op">)</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="va">outcome</span></span></code></pre></div>
+<span>                           N <span class="op">=</span> <span class="fl">1000</span>, generations <span class="op">=</span> <span class="fl">10000</span>, mu <span class="op">=</span> <span class="fl">0.025</span>, sigma <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>                           ploidy <span class="op">=</span> <span class="fl">2</span>, reproduction <span class="op">=</span> <span class="st">"sexual"</span>, sexes <span class="op">=</span> <span class="cn">TRUE</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div class="float">
-<img src="figures/fig3_complex.png" alt="Fig 3, complex landscape"><div class="figcaption">Fig 3, complex landscape</div>
+<img src="figures/fig3_complex.png" alt="Fig 3, complex landscape (Motifs 1 and 2 vs. Motif 6 in red)"><div class="figcaption">Fig 3, complex landscape (Motifs 1 and 2
+vs. Motif 6 in red)</div>
 </div>
 <div class="float">
-<img src="figures/figS1.png" alt="Fig S1: simple landscape, all motifs, with Lande separatrices (black)"><div class="figcaption">Fig S1: simple landscape, all motifs, with Lande
-separatrices (black)</div>
+<img src="figures/figS1.png" alt="Fig S1: simple landscape, all six motifs, with Lande separatrices (black)"><div class="figcaption">Fig S1: simple landscape, all six motifs, with
+Lande separatrices (black)</div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="fig-4-and-5-landscape-complexity">Fig 4 and 5: landscape complexity<a class="anchor" aria-label="anchor" href="#fig-4-and-5-landscape-complexity"></a>
 </h2>
-<p><em>Script: <code>analysis/fig4_fig5_complexity.R</code>.</em> Ten
-Perlin landscapes per frequency (0.1 to 1.8), mutational sd 0.2. Fig 4A
-shows how often each motif reaches a different peak than the unregulated
-motif 6; Fig 4B the agreement between all pairs of motifs.</p>
+<p><em>Script: <code>fig4_fig5_complexity.R</code>.</em> Twenty random
+Perlin landscapes per frequency (<code>0.3, 0.6, 1.2, 1.8</code>, offset
+<code>0.5</code>), <span class="math inline">\(25 \times 25\)</span>
+starting grid in <span class="math inline">\([2, 10]^2\)</span>,
+mutational SD <span class="math inline">\(\sigma = 0.2\)</span> (plus a
+<span class="math inline">\(\sigma = 0.05\)</span> check across 10
+landscapes and a <span class="math inline">\(21 \times 21\)</span>
+grid). Fig. 4A shows mean outcome mismatch against the unregulated motif
+6 (rising from 0.09–0.14 at frequency 0.3 to 0.29–0.38 at frequency
+1.8); Fig. 4B shows pairwise outcome agreement between all six
+motifs.</p>
 <p><img src="figures/fig4_sigma0.2.png"></p>
-<p>Fig 5 measures the angle between the direction of divergence from
-motif 6 and the leading eigenvector of M at the peak: angles below 45°
-mean divergence follows the direction of most mutational variance.</p>
+<p>Fig. 5 measures the angle between each population’s divergence vector
+(from its starting phenotype to the local optimum it reaches) and the
+dominant eigenvector <span class="math inline">\(M_{\max}\)</span> of
+the M-matrix at that optimum. For the isotropic motif 6, the numerical
+eigenvector is arbitrary and angles stay uniform around 45°; for all
+five regulated motifs, angles decrease monotonically with landscape
+complexity (down to medians of 22.0°–35.7° at frequency 1.8).</p>
 <p><img src="figures/fig5_sigma0.2.png"></p>
 </div>
 <div class="section level2">
 <h2 id="fig-6-trajectories-of-g-and-m">Fig 6: trajectories of G and M<a class="anchor" aria-label="anchor" href="#fig-6-trajectories-of-g-and-m"></a>
 </h2>
-<p><em>Script: <code>analysis/fig6_trajectories.R</code>.</em> Motifs 1
-and 5 start from a phenotype where their M-matrices are nearly
-identical, on a landscape of twin peaks. The figure tracks the mean
-phenotype, the G-matrix and the M-matrix (<code>record_m = TRUE</code>)
-through time.</p>
+<p><em>Script: <code>fig6_trajectories.R</code> (candidate found via
+<code>fig6_search.R</code>).</em> Motifs 1 and 5 start at
+<code>(1.0, 4.0)</code>—where their local diploid M-matrices share
+nearly identical eccentricity (0.99991 vs. 0.99986) and orientation
+(73.34° vs. 73.40°)—on a twin-peak landscape built as the smooth maximum
+(<span class="math inline">\(\beta = 100\)</span>) of two shifted,
+squared frequency-<code>0.05</code> Perlin layers (seed
+<code>44</code>). Across 10 diploid sexual replicates (<span class="math inline">\(N = 10{,}000\)</span>, 6,000 generations), 9/10
+motif 1 replicates reach <code>(8.45, 9.05)</code> while 10/10 motif 5
+replicates reach <code>(7.61, 8.21)</code>. The additive genetic
+covariance matrix <span class="math inline">\(\mathbf{G}\)</span> is
+estimated every 50 generations by mid-parent–offspring regression (5,000
+random pairs independent of fitness).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">layer</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">offset</span><span class="op">)</span> <span class="fu"><a href="../reference/landscapes.html">landscape_perlin</a></span><span class="op">(</span>frequency <span class="op">=</span> <span class="fl">0.05</span>, seed <span class="op">=</span> <span class="fl">76</span>, offset <span class="op">=</span> <span class="va">offset</span>,</span>
-<span>                                           transform <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="op">(</span><span class="op">(</span><span class="va">z</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">twin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/landscapes.html">landscape_smoothmax</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/layer.html" class="external-link">layer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/layer.html" class="external-link">layer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, beta <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_population.html">simulate_population</a></span><span class="op">(</span><span class="fu"><a href="../reference/paper_motif.html">paper_motif</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="../reference/landscapes.html">landscape_grid</a></span><span class="op">(</span><span class="va">twin</span>, <span class="fl">0</span>, <span class="fl">15</span><span class="op">)</span>,</span>
-<span>                           start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.12</span>, <span class="fl">6.4</span><span class="op">)</span>, N <span class="op">=</span> <span class="fl">10000</span>, generations <span class="op">=</span> <span class="fl">10000</span>,</span>
-<span>                           record_m <span class="op">=</span> <span class="cn">TRUE</span>, record_every <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">layer</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">offset</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/landscapes.html">landscape_perlin</a></span><span class="op">(</span>frequency <span class="op">=</span> <span class="fl">0.05</span>, seed <span class="op">=</span> <span class="fl">44</span>, offset <span class="op">=</span> <span class="va">offset</span>,</span>
+<span>                   transform <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="op">(</span><span class="op">(</span><span class="va">z</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">twin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/landscapes.html">landscape_smoothmax</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/layer.html" class="external-link">layer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/layer.html" class="external-link">layer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>, beta <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/fig6.png"></p>
-<p>With replicates, the outcome from this start is not consistent: the
-twin peaks have almost equal heights and are joined by a nearly flat
-ridge, so which peak is reached depends largely on drift.
-<code>analysis/fig6_search.R</code> screens for better starting points;
-the motif example above is a robust alternative for showing that motifs
-diverge.</p>
 </div>
 <div class="section level2">
 <h2 id="fig-s3-perlin-landscapes">Fig S3: Perlin landscapes<a class="anchor" aria-label="anchor" href="#fig-s3-perlin-landscapes"></a>
 </h2>
-<p><em>Script: <code>analysis/figS3_perlin.R</code>.</em> Landscapes at
-increasing Perlin frequency, and their spatial correlation.</p>
+<p><em>Script: <code>figS3_perlin.R</code>.</em> Perlin adaptive
+landscapes at five increasing frequencies
+(<code>0.1, 0.3, 0.6, 1.2, 1.8</code>; seed <code>1234</code>, offset
+<code>0.5</code>) and their spatial autocorrelation profiles.</p>
 <p><img src="figures/figS3.png"></p>
 </div>
 <div class="section level2">
 <h2 id="running-the-scripts">Running the scripts<a class="anchor" aria-label="anchor" href="#running-the-scripts"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="bu">cd</span> analysis</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="va">QUICK</span><span class="op">=</span>1 <span class="va">OPENBLAS_NUM_THREADS</span><span class="op">=</span>1 <span class="ex">Rscript</span> fig3_basins.R   <span class="co"># quick pipeline check</span></span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="va">OPENBLAS_NUM_THREADS</span><span class="op">=</span>1 <span class="va">N_CORES</span><span class="op">=</span>32 <span class="ex">Rscript</span> fig3_basins.R</span></code></pre></div>
-<p>Results are cached in <code>analysis/output/</code>, so a second run
-only redraws the figures; set <code>REDO=1</code> to recompute. See
-<code>analysis/README.md</code> for details and run times.</p>
+<p>From the <code>GRN_Landscapes</code> repository root:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="va">QUICK</span><span class="op">=</span>1 <span class="va">OPENBLAS_NUM_THREADS</span><span class="op">=</span>1 <span class="ex">Rscript</span> fig3_basins.R   <span class="co"># quick pipeline check</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="va">OPENBLAS_NUM_THREADS</span><span class="op">=</span>1 <span class="va">OMP_NUM_THREADS</span><span class="op">=</span>1 <span class="va">MKL_NUM_THREADS</span><span class="op">=</span>1 <span class="ex">Rscript</span> run_all.R</span></code></pre></div>
+<p>Results are cached in <code>output/</code>, so re-running a script
+only redraws its figure; set <code>REDO=1</code> to recompute,
+<code>SIGMA=0.05</code> for the low-mutation Fig. 4–5 check, or
+<code>SELECTION=proportional</code> for proportional Wright–Fisher
+selection.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

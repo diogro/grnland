@@ -14,7 +14,8 @@ develop(
   tol = 1e-10,
   tmax = 10000,
   maxsteps = 1e+05,
-  check_stability = TRUE
+  check_stability = TRUE,
+  newton_radius = 0.1
 )
 ```
 
@@ -46,6 +47,16 @@ develop(
 - check_stability:
 
   Check that the steady state is stable.
+
+- newton_radius:
+
+  Hill networks: first try to solve for the steady state with Newton's
+  method from \`x_start\`, accepting the result only if it is stable,
+  within this relative distance (max-norm) of the start, and in the
+  direction the dynamics point at the start; otherwise integrate. Much
+  faster when starts are close to the steady state, as for offspring
+  developing from their parent's expression. \`0\` always integrates.
+  Other models ignore it.
 
 ## Value
 

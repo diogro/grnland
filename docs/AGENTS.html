@@ -96,7 +96,7 @@
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'devtools::test()'</span>                           <span class="co"># tests (~1 min)</span></span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'devtools::document()'</span>                       <span class="co"># after editing roxygen comments</span></span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'Rcpp::compileAttributes()'</span>                  <span class="co"># after changing exported C++ signatures</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'pkgdown::build_site(preview = FALSE)'</span>       <span class="co"># rebuild docs/ (installs the package)</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="ex">Rscript</span> pkgdown/build_site.R                            <span class="co"># rebuild docs/ (installs the package)</span></span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="ex">R</span> CMD build . <span class="kw">&amp;&amp;</span> <span class="ex">R</span> CMD check <span class="at">--no-manual</span> grnland_<span class="pp">*</span>.tar.gz</span></code></pre></div>
 <ul><li>Analysis scripts and vignettes use the <em>installed</em> package. Reinstall before running them, or they will silently use the old code.</li>
 <li>Run analysis scripts from <code>analysis/</code> with <code>OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1</code>; test them with <code>QUICK=1</code> first. Full runs take many core-hours; ask before launching them.</li>
@@ -117,7 +117,7 @@
 </ul></div>
 <div class="section level2">
 <h2 id="docs">Docs<a class="anchor" aria-label="anchor" href="#docs"></a></h2>
-<p><code>docs/</code> is committed and served at <a href="https://diogro.github.io/grnland/" class="uri">https://diogro.github.io/grnland/</a>. After changing exported functions, the README, the vignette or the article, run <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> and commit <code>docs/</code> together with the change. The article’s figures in <code>vignettes/articles/figures/</code> are copied from <code>analysis/figures/</code>; most are from reduced <code>QUICK=1</code> runs, and the article says so.</p>
+<p><code>docs/</code> is committed and served at <a href="https://diogro.github.io/grnland/" class="uri">https://diogro.github.io/grnland/</a>. After changing exported functions, the README, the vignette or the article, run <code>Rscript pkgdown/build_site.R</code> and commit <code>docs/</code> together with the change. The article’s figures in <code>vignettes/articles/figures/</code> are copied from <code>analysis/figures/</code>; most are from reduced <code>QUICK=1</code> runs, and the article says so.</p>
 </div>
 <div class="section level2">
 <h2 id="donts">Don’ts<a class="anchor" aria-label="anchor" href="#donts"></a></h2>

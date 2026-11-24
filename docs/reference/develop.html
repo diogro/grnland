@@ -65,7 +65,8 @@ a steady state is reached. The steady state is checked for stability.</p>
 <span>  tol <span class="op">=</span> <span class="fl">1e-10</span>,</span>
 <span>  tmax <span class="op">=</span> <span class="fl">10000</span>,</span>
 <span>  maxsteps <span class="op">=</span> <span class="fl">1e+05</span>,</span>
-<span>  check_stability <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  check_stability <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  newton_radius <span class="op">=</span> <span class="fl">0.1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -98,6 +99,16 @@ the network has several stable states, this determines which is reached.</p></dd
 
 <dt id="arg-check-stability">check_stability<a class="anchor" aria-label="anchor" href="#arg-check-stability"></a></dt>
 <dd><p>Check that the steady state is stable.</p></dd>
+
+
+<dt id="arg-newton-radius">newton_radius<a class="anchor" aria-label="anchor" href="#arg-newton-radius"></a></dt>
+<dd><p>Hill networks: first try to solve for the steady
+state with Newton's method from `x_start`, accepting the result only if
+it is stable, within this relative distance (max-norm) of the start, and
+in the direction the dynamics point at the start; otherwise integrate.
+Much faster when starts are close to the steady state, as for offspring
+developing from their parent's expression. `0` always integrates. Other
+models ignore it.</p></dd>
 
 </dl></div>
     <div class="section level2">

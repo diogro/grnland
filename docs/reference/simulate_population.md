@@ -26,6 +26,9 @@ simulate_population(
   invalid = c("lethal", "reject"),
   record_every = 10,
   record_m = FALSE,
+  record_genotype = FALSE,
+  record_third_moments = FALSE,
+  dedupe = c("none", "exact", "genotype"),
   stop = NULL,
   seed = NULL,
   dev_args = list()
@@ -103,6 +106,32 @@ simulate_population(
 
   Also record the M-matrix at the mean genotype.
 
+- record_genotype:
+
+  Also record the mean genotypic value of each locus
+  (\`gmean\_\<locus\>\`) and the genotypic covariance matrix of the loci
+  (\`G\_\<locus\>\_\<locus\>\`, upper triangle), over individuals that
+  develop.
+
+- record_third_moments:
+
+  Also record the third central moments of the genotypic values,
+  E\[(g_i - mean_i)(g_j - mean_j)(g_k - mean_k)\] for i \<= j \<= k
+  (\`G3\_\<locus\>\_\<locus\>\_\<locus\>\`; divisor n, not n - 1), over
+  individuals that develop.
+
+- dedupe:
+
+  Develop each distinct new individual once per generation and share the
+  result (\[develop_unique()\]). Only worth it when genotypes repeat
+  often, e.g. with discrete allelic values; with continuous mutational
+  effects nearly every genotype is unique and it only adds overhead.
+  \`"none"\` (default) develops every new individual. \`"exact"\` keys
+  on the genotype and the starting expression state and gives the same
+  results as \`"none"\`. \`"genotype"\` keys on the genotype only, which
+  saves more but can pick a different steady state for genotypes with
+  several stable states (see \[dev_key_genotype()\]).
+
 - stop:
 
   Optional stopping rule, see \[stop_at_peaks()\].
@@ -113,18 +142,22 @@ simulate_population(
 
 - dev_args:
 
-  List of extra arguments for \[develop()\].
+  List of extra arguments for \[develop()\], e.g. \`list(newton_radius =
+  0)\` to always integrate instead of starting development of new
+  individuals with Newton's method from the parent's expression state
+  (the default, much faster; see \[develop()\]).
 
 ## Value
 
 An object of class \`grn_sim\`: a list with \`trajectory\` (data frame
 of generation, trait means, phenotypic (co)variances \`P\_\*\`, mean
 fitness and number of failed developments; plus \`M\_\*\` if
-\`record_m\`), \`outcome\` (index of the peak reached, or \`NA\`),
-\`generations\` run, and \`final\` (alleles, genotypes, phenotypes and
-fitness of the last generation). With clonal reproduction and no
-environmental noise the phenotypic covariance matrix equals the genetic
-covariance matrix G.
+\`record_m\`, and \`gmean\_\*\`, \`G\_\*\` if \`record_genotype\`;
+\`G3\_\*\` if \`record_third_moments\`), \`outcome\` (index of the peak
+reached, or \`NA\`), \`generations\` run, and \`final\` (alleles,
+genotypes, phenotypes and fitness of the last generation). With clonal
+reproduction and no environmental noise the phenotypic covariance matrix
+equals the genetic covariance matrix G.
 
 ## Details
 
